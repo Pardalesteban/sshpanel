@@ -226,6 +226,16 @@ jobs:
                           "url": f"{base}/{name}",
                       }
                       break
+          # Sin firmas (.sig) no hay plataformas → un latest.json vacío hace
+          # que el updater de las apps instaladas tire error al arrancar.
+          # Mejor no publicarlo: el cliente trata el feed ausente como
+          # "sin updates".
+          if not platforms:
+              print("::warning::No signed bundles found (.sig) - skipping "
+                    "latest.json. Set TAURI_SIGNING_PRIVATE_KEY + "
+                    "TAURI_SIGNING_PRIVATE_KEY_PASSWORD secrets to enable "
+                    "auto-update.")
+              raise SystemExit(0)
           notes = ""
           if os.path.exists("release_notes.md"):
               notes = open("release_notes.md").read()

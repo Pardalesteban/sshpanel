@@ -72,7 +72,7 @@ async function getCurrentVersion(): Promise<string> {
   }
 }
 
-async function checkOnce(): Promise<void> {
+async function checkOnce(opts: { silent?: boolean } = {}): Promise<void> {
   if (!state.enabled) return;
   setState({ stage: "checking", error: undefined });
   try {
@@ -90,7 +90,25 @@ async function checkOnce(): Promise<void> {
       date: update.date ?? undefined,
     });
   } catch (e: any) {
-    setState({ stage: "error", error: e?.message ?? String(e) });
+    const msg = e?.message ?? String(e);
+    // El feed no tiene binarios para esta plataforma (release sin firmar) o
+    // directamente no existe — el usuario no puede hacer nada con eso: lo
+    // tratamos como "sin updates" en vez de error.
+    const noFeed =
+      /platforms/i.test(msg) || /could not fetch a valid release/i.test(msg);
+    if (noFeed) {
+      console.warn("[updater] feed sin binarios para esta plataforma:", msg);
+      setState({ stage: "uptodate" });
+      return;
+    }
+    // Chequeo automático (boot / poll): fallar en silencio — un banner de
+    // error al abrir la app por un chequeo en background es ruido.
+    if (opts.silent) {
+      console.warn("[updater] check automático falló:", msg);
+      setState({ stage: "idle" });
+      return;
+    }
+    setState({ stage: "error", error: msg });
   }
 }
 
@@ -145,8 +163,8 @@ export const updater = {
     if (!enabled) return;
     // Debounce inicial para no competir con el primer render
     bootTimer = setTimeout(() => {
-      checkOnce();
-      pollTimer = setInterval(checkOnce, CHECK_INTERVAL_MS);
+      checkOnce({ silent: true });
+      pollTimer = setInterval(() => checkOnce({ silent: true }), CHECK_INTERVAL_MS);
     }, BOOT_DEBOUNCE_MS);
   },
 
@@ -169,8 +187,8 @@ export const updater = {
     return state;
   },
 
-  /** Disparar chequeo manual (ej. desde el panel Acerca de). */
-  check: checkOnce,
+  /** Disparar chequeo manual (ej. desde el panel Acerca de) — sí muestra errores. */
+  check: () => checkOnce(),
   downloadAndInstall,
   restart,
 };

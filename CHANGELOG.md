@@ -8,7 +8,15 @@ This file is the source of truth consumed by the in-app update viewer (Fase 6).
 
 ## [Unreleased]
 
-_Nothing yet — open a discussion or issue if you have ideas._
+### Fixed
+
+- **No more error banner on app start when the update feed is unusable** —
+  automatic update checks now fail silently (console only), and a feed
+  without binaries for the current platform (unsigned release) is treated
+  as "no update available" instead of an error. Manual checks from the
+  About panel still surface real errors.
+- The release workflow no longer publishes an empty `latest.json` when
+  bundles are unsigned — installed apps treat the missing feed gracefully.
 
 ## [0.2.0] — 2026-06-10
 
