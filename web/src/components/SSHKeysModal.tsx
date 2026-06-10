@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { X, Key, Sparkles, ClipboardPaste, Copy, Check, Trash2, AlertCircle, ShieldCheck } from "lucide-react";
 import { api, type KeyStatus } from "../lib/api";
 import { cn } from "../lib/utils";
+import { useEscapeClose } from "../lib/hooks";
 
 interface Props {
   open: boolean;
@@ -31,6 +32,9 @@ export function SSHKeysModal({ open, hostId, hostName, onClose, onChange }: Prop
     setMode("generate");
     api.keyStatus(hostId).then(setStatus).catch(() => setStatus(null));
   }, [open, hostId]);
+
+  // No cerrar con Esc mientras instala (el request sigue corriendo en el remoto)
+  useEscapeClose(open && !working, onClose);
 
   if (!open) return null;
 

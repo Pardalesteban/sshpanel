@@ -113,6 +113,9 @@
 - [x] **API pública de SSHConnection** (`run_result`, `start_process`) — los endpoints ya no acceden a `conn._conn` privado.
 - [x] **Lifespan en vez de `@app.on_event`** (deprecado en FastAPI) + versión única desde `importlib.metadata` (antes hardcodeada en 2 lugares).
 - [x] `last_connected` se actualiza al conectar (la columna existía pero nunca se escribía).
+- [x] **Atajos según SO** — la UI muestra `Ctrl+K` en Windows/Linux y `⌘K` en macOS (`MOD_KEY`/`modShortcut()` en utils.ts; los handlers ya aceptaban ambos modificadores)
+- [x] **Probar conexión** en AddHostModal — endpoint `POST /hosts/test` que conecta sin guardar (timeout 10s, devuelve `uname`), con fallback a credenciales guardadas al editar
+- [x] **Esc cierra todos los modales** — hook `useEscapeClose` aplicado a AddHost/Config/ExecResult/SSHKeys/InstallDocker/About (los que corren operaciones remotas ignoran Esc mientras trabajan)
 - [ ] Verificación de host keys SSH (hoy `known_hosts=None` — TOFU: guardar fingerprint en la primera conexión y validar después)
 - [ ] Autenticación opcional de la API (token/password) para despliegues en VPS expuestos
 - [ ] Tests reales del backend (pytest + TestClient: CRUD hosts, export/import round-trip, parsers de docker stats)

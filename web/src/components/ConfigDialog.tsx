@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { X, Download, Upload, Lock } from "lucide-react";
+import { useEscapeClose } from "../lib/hooks";
 
 type Mode = "export" | "import" | null;
 
@@ -41,6 +42,8 @@ export function ConfigDialog() {
     setMode(null);
     reset();
   };
+
+  useEscapeClose(mode !== null, close);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();

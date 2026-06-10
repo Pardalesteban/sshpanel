@@ -3,7 +3,7 @@ import { Server, Plus, Settings, Search, X, LayoutGrid, Info } from "lucide-reac
 import type { Host } from "../lib/api";
 import { HostAvatar } from "./HostAvatar";
 import { subscribeLatencies } from "../lib/latencyStore";
-import { cn } from "../lib/utils";
+import { cn, modShortcut } from "../lib/utils";
 
 interface Props {
   hosts: Host[];
@@ -89,10 +89,10 @@ export function Sidebar({
           ) : (
             <button
               onClick={onOpenPalette}
-              title="Command palette"
+              title={`Command palette (${modShortcut("K")})`}
               className="rounded border border-border bg-bg-elevated px-1.5 py-0.5 font-mono text-[10px] text-text-dim transition hover:text-text-muted"
             >
-              ⌘K
+              {modShortcut("K")}
             </button>
           )}
         </div>
@@ -113,7 +113,7 @@ export function Sidebar({
             <LayoutGrid size={14} className="text-brand-violet" />
             <span className="font-medium">Overview</span>
             <kbd className="ml-auto rounded border border-border bg-bg-elevated px-1 py-0.5 font-mono text-[9px] text-text-dim">
-              ⌘H
+              {modShortcut("H")}
             </kbd>
           </button>
         </div>

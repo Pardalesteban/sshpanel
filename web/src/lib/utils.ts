@@ -6,6 +6,24 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
+ * Detección de plataforma para mostrar el modificador correcto en la UI:
+ * macOS usa ⌘ (metaKey), Windows/Linux usan Ctrl. Los handlers ya aceptan
+ * ambos (metaKey || ctrlKey) — esto es solo presentación.
+ */
+export const isMac: boolean =
+  typeof navigator !== "undefined" &&
+  /mac|iphone|ipad|ipod/i.test(
+    (navigator as any).userAgentData?.platform ?? navigator.platform ?? ""
+  );
+
+export const MOD_KEY = isMac ? "⌘" : "Ctrl";
+
+/** "K" → "⌘K" en macOS, "Ctrl+K" en Windows/Linux. */
+export function modShortcut(key: string): string {
+  return isMac ? `⌘${key}` : `Ctrl+${key}`;
+}
+
+/**
  * Genera un gradient determinístico a partir de un string (nombre del host).
  * Estilo "identicon" pero con dos colores que combinan.
  */

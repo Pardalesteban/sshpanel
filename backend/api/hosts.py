@@ -1,3 +1,4 @@
+import asyncio
 import uuid
 from datetime import datetime, timezone
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
@@ -10,7 +11,7 @@ from ..db.database import get_db
 from ..db.models import Host
 from ..core.config import encrypt_payload, decrypt_payload
 from ..core.crypto import encrypt, decrypt
-from ..core.ssh import SSHProfile, pool
+from ..core.ssh import SSHProfile, SSHConnection, pool
 
 router = APIRouter(prefix="/hosts", tags=["hosts"])
 
@@ -162,6 +163,58 @@ async def disconnect_host(host_id: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Host no encontrado")
     await pool.disconnect(host_id)
     return {"ok": True, "connected": False}
+
+
+class TestConnectionRequest(BaseModel):
+    """Prueba una conexión SSH sin guardar nada. Si `host_id` viene (caso
+    editar), los campos de credenciales vacíos se completan con los guardados."""
+    host: str
+    port: int = 22
+    username: str = "root"
+    password: Optional[str] = None
+    private_key_path: Optional[str] = None
+    host_id: Optional[str] = None
+
+
+TEST_TIMEOUT_S = 10
+
+
+@router.post("/test")
+async def test_connection(data: TestConnectionRequest, db: Session = Depends(get_db)):
+    password = data.password
+    key_path = data.private_key_path
+    if data.host_id:
+        existing = db.query(Host).filter(Host.id == data.host_id).first()
+        if existing:
+            if not password and existing.password_encrypted:
+                password = decrypt(existing.password_encrypted)
+            if not key_path:
+                key_path = existing.private_key_path
+
+    profile = SSHProfile(
+        id="__test__",
+        name=data.host,
+        host=data.host,
+        port=data.port,
+        username=data.username,
+        password=password,
+        private_key_path=key_path,
+    )
+    conn = SSHConnection(profile)
+    try:
+        await asyncio.wait_for(conn.connect(), timeout=TEST_TIMEOUT_S)
+        result = await conn.run_result("uname -sr")
+        uname = (result.stdout or "").strip() or None
+        return {"ok": True, "uname": uname}
+    except asyncio.TimeoutError:
+        return {"ok": False, "error": f"Timeout de conexión ({TEST_TIMEOUT_S}s)"}
+    except Exception as e:
+        return {"ok": False, "error": str(e) or type(e).__name__}
+    finally:
+        try:
+            await conn.disconnect()
+        except Exception:
+            pass
 
 
 class ExecRequest(BaseModel):

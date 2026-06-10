@@ -62,6 +62,18 @@ export const api = {
     request<{ ok: boolean; connected: boolean }>(`/hosts/${id}/disconnect`, {
       method: "POST",
     }),
+  testConnection: (data: {
+    host: string;
+    port: number;
+    username: string;
+    password?: string;
+    private_key_path?: string;
+    host_id?: string;
+  }) =>
+    request<{ ok: boolean; uname?: string | null; error?: string }>(
+      "/hosts/test",
+      { method: "POST", body: JSON.stringify(data) }
+    ),
   execCommand: (id: string, command: string) =>
     request<ExecResult>(`/hosts/${id}/exec`, {
       method: "POST",

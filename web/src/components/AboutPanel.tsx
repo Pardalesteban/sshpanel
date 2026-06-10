@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { X, Info, RefreshCw, Download, Check, RotateCw, AlertCircle, ExternalLink } from "lucide-react";
 import { updater, type UpdaterState } from "../lib/updater";
 import { cn } from "../lib/utils";
+import { useEscapeClose } from "../lib/hooks";
 
 /**
  * Panel "Acerca de" — muestra versión actual, estado del updater y changelog
@@ -30,6 +31,8 @@ export function AboutPanel({ open, onClose }: Props) {
   const [loadingChangelog, setLoadingChangelog] = useState(false);
 
   useEffect(() => updater.subscribe(setS), []);
+
+  useEscapeClose(open, onClose);
 
   useEffect(() => {
     if (!open || releases) return;

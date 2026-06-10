@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { X, Plus, Save } from "lucide-react";
+import { X, Plus, Save, Plug, Loader2, CheckCircle2, XCircle } from "lucide-react";
 import { api, type Host } from "../lib/api";
+import { useEscapeClose } from "../lib/hooks";
 
 interface Props {
   open: boolean;
@@ -19,16 +20,26 @@ const EMPTY = {
   tags: "",
 };
 
+type TestState =
+  | { status: "idle" }
+  | { status: "testing" }
+  | { status: "ok"; uname: string | null }
+  | { status: "fail"; error: string };
+
 export function AddHostModal({ open, onClose, onSaved, editing }: Props) {
   const [form, setForm] = useState({ ...EMPTY });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [test, setTest] = useState<TestState>({ status: "idle" });
 
   const isEdit = !!editing;
+
+  useEscapeClose(open, onClose);
 
   useEffect(() => {
     if (!open) return;
     setError(null);
+    setTest({ status: "idle" });
     if (editing) {
       setForm({
         name: editing.name,
@@ -45,6 +56,28 @@ export function AddHostModal({ open, onClose, onSaved, editing }: Props) {
   }, [open, editing]);
 
   if (!open) return null;
+
+  const handleTest = async () => {
+    if (!form.host) return;
+    setTest({ status: "testing" });
+    try {
+      const res = await api.testConnection({
+        host: form.host,
+        port: form.port,
+        username: form.username,
+        password: form.password || undefined,
+        // En edit, el backend completa credenciales vacías con las guardadas
+        host_id: editing?.id,
+      });
+      setTest(
+        res.ok
+          ? { status: "ok", uname: res.uname ?? null }
+          : { status: "fail", error: res.error ?? "Error desconocido" }
+      );
+    } catch (e: any) {
+      setTest({ status: "fail", error: e.message ?? "Error de red" });
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -120,6 +153,7 @@ export function AddHostModal({ open, onClose, onSaved, editing }: Props) {
             value={form.name}
             onChange={(v) => setForm({ ...form, name: v })}
             required
+            autoFocus
           />
           <div className="grid grid-cols-[1fr_80px] gap-3">
             <Field
@@ -181,7 +215,36 @@ export function AddHostModal({ open, onClose, onSaved, editing }: Props) {
             </div>
           )}
 
-          <div className="flex items-center justify-end gap-2 pt-2">
+          {test.status === "ok" && (
+            <div className="flex items-center gap-2 rounded-md border border-brand-emerald/30 bg-brand-emerald/10 px-3 py-2 text-xs text-brand-emerald">
+              <CheckCircle2 size={14} className="shrink-0" />
+              <span>
+                Conexión exitosa{test.uname ? ` — ${test.uname}` : ""}
+              </span>
+            </div>
+          )}
+          {test.status === "fail" && (
+            <div className="flex items-center gap-2 rounded-md border border-brand-rose/30 bg-brand-rose/10 px-3 py-2 text-xs text-brand-rose">
+              <XCircle size={14} className="shrink-0" />
+              <span className="break-all">{test.error}</span>
+            </div>
+          )}
+
+          <div className="flex items-center justify-between gap-2 pt-2">
+            <button
+              type="button"
+              onClick={handleTest}
+              disabled={test.status === "testing" || !form.host}
+              className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-sm text-text-muted transition hover:bg-bg-hover hover:text-text-primary disabled:opacity-50"
+            >
+              {test.status === "testing" ? (
+                <Loader2 size={14} className="animate-spin" />
+              ) : (
+                <Plug size={14} />
+              )}
+              {test.status === "testing" ? "Probando…" : "Probar conexión"}
+            </button>
+            <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={onClose}
@@ -201,6 +264,7 @@ export function AddHostModal({ open, onClose, onSaved, editing }: Props) {
                   ? "Guardar cambios"
                   : "Crear host"}
             </button>
+            </div>
           </div>
         </form>
       </div>
@@ -216,9 +280,10 @@ interface FieldProps {
   placeholder?: string;
   mono?: boolean;
   required?: boolean;
+  autoFocus?: boolean;
 }
 
-function Field({ label, value, onChange, type = "text", placeholder, mono, required }: FieldProps) {
+function Field({ label, value, onChange, type = "text", placeholder, mono, required, autoFocus }: FieldProps) {
   return (
     <label className="block">
       <span className="mb-1 block text-[11px] font-medium uppercase tracking-wider text-text-dim">
@@ -230,6 +295,7 @@ function Field({ label, value, onChange, type = "text", placeholder, mono, requi
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         required={required}
+        autoFocus={autoFocus}
         className={`w-full rounded-md border border-border bg-bg-base/60 px-3 py-1.5 text-sm text-text-primary placeholder:text-text-dim transition focus:border-brand-violet/60 focus:outline-none focus:ring-2 focus:ring-brand-violet/20 ${
           mono ? "font-mono" : ""
         }`}

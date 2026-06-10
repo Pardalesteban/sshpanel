@@ -2,6 +2,7 @@ import { useState } from "react";
 import { X, ChevronRight, Copy, Check } from "lucide-react";
 import type { ExecResult } from "../lib/api";
 import { cn } from "../lib/utils";
+import { useEscapeClose } from "../lib/hooks";
 
 interface Props {
   open: boolean;
@@ -21,6 +22,8 @@ export function ExecResultModal({
   onClose,
 }: Props) {
   const [copied, setCopied] = useState(false);
+
+  useEscapeClose(open, onClose);
 
   if (!open) return null;
 

@@ -8,6 +8,22 @@ This file is the source of truth consumed by the in-app update viewer (Fase 6).
 
 ## [Unreleased]
 
+_Nothing yet — open a discussion or issue if you have ideas._
+
+## [0.2.0] — 2026-06-10
+
+### Added
+
+- **Test connection** button in the add/edit host modal — verifies SSH
+  credentials (10s timeout) and shows the remote `uname` before saving.
+  When editing, stored credentials are used as fallback for empty fields.
+- **OS-aware keyboard shortcut labels** — the UI now shows `Ctrl+K` on
+  Windows/Linux and `⌘K` on macOS (shortcuts always accepted both).
+- **Escape closes every modal** — add/edit host, export/import, exec result,
+  SSH keys, about panel. Modals running a remote install ignore Escape while
+  the operation is in progress.
+- Autofocus on the first field when opening the host modal.
+
 ### Security
 
 - **Restricted CORS** — the API no longer allows any browser origin (`*`).

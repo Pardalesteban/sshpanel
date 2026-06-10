@@ -16,7 +16,7 @@ import {
   Command as CommandIcon,
 } from "lucide-react";
 import { api, type Host } from "../lib/api";
-import { cn, hashGradient, initials } from "../lib/utils";
+import { cn, hashGradient, initials, MOD_KEY } from "../lib/utils";
 
 export interface PaletteContext {
   hosts: Host[];
@@ -115,7 +115,7 @@ export function CommandPalette({ open, onClose, ctx }: Props) {
           group: "Navegación",
           icon: <Activity size={14} />,
           accent: "violet",
-          shortcut: ["⌘", "S"],
+          shortcut: [MOD_KEY, "S"],
           action: () => {
             ctx.onOpenTab("system");
             onClose();
@@ -128,7 +128,7 @@ export function CommandPalette({ open, onClose, ctx }: Props) {
           group: "Navegación",
           icon: <Terminal size={14} />,
           accent: "indigo",
-          shortcut: ["⌘", "T"],
+          shortcut: [MOD_KEY, "T"],
           action: () => {
             ctx.onOpenTab("terminal");
             onClose();
@@ -141,7 +141,7 @@ export function CommandPalette({ open, onClose, ctx }: Props) {
           group: "Navegación",
           icon: <Box size={14} />,
           accent: "cyan",
-          shortcut: ["⌘", "D"],
+          shortcut: [MOD_KEY, "D"],
           action: () => {
             ctx.onOpenTab("containers");
             onClose();

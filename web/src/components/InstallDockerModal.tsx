@@ -3,6 +3,7 @@ import { Terminal as XTerm } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
 import { X, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 import "@xterm/xterm/css/xterm.css";
+import { useEscapeClose } from "../lib/hooks";
 
 interface Props {
   hostId: string;
@@ -42,6 +43,9 @@ export function InstallDockerModal({ hostId, hostName, open, onClose, onDone }: 
   const termRef = useRef<XTerm | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
   const [status, setStatus] = useState<Status>("idle");
+
+  // No cerrar con Esc mientras instala — la instalación sigue en el remoto
+  useEscapeClose(open && status !== "installing", onClose);
 
   useEffect(() => {
     if (!open) {
