@@ -197,9 +197,13 @@ jobs:
           version = "$VERSION"
           now_utc = datetime.datetime.now(datetime.timezone.utc)
           base = "$BASE_URL"
-          # Mapeo: regex de filename → key de plataforma del updater de Tauri
+          # Mapeo: regex de filename → key de plataforma del updater de Tauri.
+          # El job de macOS corre en macos-latest (Apple Silicon), así que el
+          # .app.tar.gz es aarch64 — NO mapearlo a darwin-x86_64: un Mac Intel
+          # descargaría un binario que no puede ejecutar. Si algún día se
+          # buildea universal o se agrega un runner Intel, sumar la entrada
+          # darwin-x86_64 con su propio artifact.
           rules = [
-              (r".*\.app\.tar\.gz$",                 "darwin-x86_64"),    # también sirve aarch64 con universal binary
               (r".*\.app\.tar\.gz$",                 "darwin-aarch64"),
               (r".*\.AppImage$",                     "linux-x86_64"),
               (r".*-setup\.exe$",                    "windows-x86_64"),

@@ -102,7 +102,7 @@
   - [x] Step de build en `release.yml` lee `TAURI_SIGNING_PRIVATE_KEY` + `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` de secrets — Tauri firma automáticamente si están presentes (degrada graciosamente a build sin firma si no)
   - [x] Artifact globs incluyen `*.sig` (firmas) para los formatos updater-capable
   - [x] Step `Generate latest.json` arma el feed del updater desde los artifacts: lee cada `.sig`, mapea filename → key de plataforma (`darwin-*`, `linux-x86_64`, `windows-x86_64`), incluye URL de Release y notas del CHANGELOG. Publicado como asset del Release → URL `releases/latest/download/latest.json` queda fija para el endpoint del cliente.
-  - [ ] **Pegar 2 secrets en GitHub** (acción del user — instrucciones impresas tras commit)
+  - [x] **Pegar 2 secrets en GitHub** — cargados el 2026-06-10; la release v0.2.0 re-buildeada salió firmada (`.sig` + `latest.json` con platforms) y el auto-update quedó funcional
 - [x] **Fix release pipeline** — `download-artifact` bajaba también el artifact `.dockerbuild` (build record de `docker/build-push-action@v6`) y su descarga fallaba tras 5 retries, tirando el job release. Ahora filtra con `pattern: desktop-*` y el build record no se sube (`DOCKER_BUILD_RECORD_UPLOAD: false`).
 
 ## Fase 7 — Hardening (seguridad + robustez)
