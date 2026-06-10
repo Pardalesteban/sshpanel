@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="images/Logo.png" alt="SSHPanel" width="128" height="128" />
+  <img src="images/Logo_nuevo.png" alt="SSHPanel" width="128" height="128" />
 
   # SSHPanel
 
