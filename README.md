@@ -147,6 +147,15 @@ The UI uses a curated palette mapped to domains — see
 See [`roadmap.md`](roadmap.md). Fase 4 (advanced features) is complete; current work is on
 Fase 5 (open-source ready) and Fase 6 (auto-update).
 
+## Support
+
+If SSHPanel saved you time and you'd like to say thanks, you can buy me a coffee:
+
+[**☕ paypal.me/EstebanPardal**](https://www.paypal.com/paypalme/EstebanPardal)
+
+Donations are completely optional — the project stays free and MIT-licensed
+either way. Stars on GitHub help too.
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
