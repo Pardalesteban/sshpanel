@@ -1,17 +1,13 @@
 # --- Stage 1: build the frontend ---
 FROM node:20-alpine AS web-builder
 WORKDIR /web
-COPY web/package.json web/package-lock.json* web/pnpm-lock.yaml* ./
-# Soporta npm o pnpm sin obligar a uno
-RUN if [ -f pnpm-lock.yaml ]; then \
-        corepack enable && pnpm install --frozen-lockfile; \
-    elif [ -f package-lock.json ]; then \
-        npm ci; \
-    else \
-        npm install; \
-    fi
+# pnpm versión pineada al `packageManager` del package.json — evita drift entre
+# dev local, CI y la imagen Docker.
+RUN npm install -g pnpm@10.33.4
+COPY web/package.json web/pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
 COPY web/ ./
-RUN if [ -f pnpm-lock.yaml ]; then pnpm build; else npm run build; fi
+RUN pnpm build
 
 # --- Stage 2: runtime ---
 FROM python:3.12-slim
