@@ -1,0 +1,7 @@
+# Tauri build artifacts
+target/
+gen/
+Cargo.lock
+
+# Source icon (regenerable)
+icons/source.png

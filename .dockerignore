@@ -1,0 +1,30 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.egg-info
+.venv
+venv
+*.egg
+
+# Node (se buildea en stage 1)
+web/node_modules
+web/dist
+
+# Tauri (no va en la imagen Docker — sólo escritorio)
+web/src-tauri
+sidecar
+
+# Docs / dev
+*.md
+images
+roadmap.md
+
+# IDE
+.idea
+.vscode
+.claude

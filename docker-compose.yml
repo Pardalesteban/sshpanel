@@ -1,0 +1,36 @@
+# SSHPanel — production-ready compose
+#
+# Quick start:
+#   1. Generate a SECRET_KEY:  openssl rand -hex 32
+#   2. Save it to .env:        echo "SECRET_KEY=<value>" > .env
+#   3. Run:                    docker compose up -d
+#   4. Open:                   http://localhost:8080
+#
+# Without .env it boots with a fallback key but warns loudly — don't do that in prod.
+
+services:
+  sshpanel:
+    build: .
+    image: sshpanel:latest
+    container_name: sshpanel
+    restart: unless-stopped
+    ports:
+      - "${SSHPANEL_PORT:-8080}:8080"
+    environment:
+      - SECRET_KEY=${SECRET_KEY:?Set SECRET_KEY in .env — run "openssl rand -hex 32" to generate one}
+      - TZ=${TZ:-UTC}
+    volumes:
+      # DB + config (hosts cifrados con SECRET_KEY)
+      - sshpanel_data:/app/data
+      # Claves SSH generadas vía el modal de keys (ed25519). chmod 700 ya aplicado en el Dockerfile.
+      - sshpanel_keys:/root/.sshpanel
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8080/api/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+
+volumes:
+  sshpanel_data:
+  sshpanel_keys:

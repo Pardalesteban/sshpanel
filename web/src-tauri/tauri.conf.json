@@ -1,0 +1,60 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "SSHPanel",
+  "version": "0.1.0",
+  "identifier": "com.sshpanel.app",
+  "build": {
+    "beforeDevCommand": "pnpm dev",
+    "beforeBuildCommand": "pnpm build",
+    "devUrl": "http://localhost:5173",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "SSHPanel",
+        "width": 1280,
+        "height": 820,
+        "minWidth": 880,
+        "minHeight": 600,
+        "decorations": true,
+        "transparent": false,
+        "resizable": true,
+        "fullscreen": false,
+        "backgroundColor": "#0c0d10"
+      }
+    ],
+    "security": {
+      "csp": null
+    },
+    "trayIcon": {
+      "iconPath": "icons/icon.png",
+      "iconAsTemplate": true,
+      "tooltip": "SSHPanel"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "category": "DeveloperTool",
+    "shortDescription": "SSH + Docker manager",
+    "longDescription": "Open-source SSH and Docker manager — manage multiple servers from a single elegant app.",
+    "createUpdaterArtifacts": true
+  },
+  "plugins": {
+    "updater": {
+      "endpoints": [
+        "https://github.com/Pardalesteban/sshpanel/releases/latest/download/latest.json"
+      ],
+      "pubkey": "REPLACE_ME_AFTER_RUNNING_tauri_signer_generate",
+      "dialog": false
+    }
+  }
+}

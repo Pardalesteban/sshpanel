@@ -1,0 +1,52 @@
+# Secrets / local state — NEVER commit
+.env
+*.secret_key
+.sshpanel/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+*.egg
+.venv/
+venv/
+.eggs/
+dist/
+build/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node / Vite
+web/node_modules/
+web/dist/
+web/.vite/
+
+# Tauri
+web/src-tauri/target/
+web/src-tauri/Cargo.lock
+sidecar/build/
+sidecar/dist/
+sidecar/*.spec
+
+# PyInstaller
+*.spec
+build/
+dist/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Claude Code
+.claude/
