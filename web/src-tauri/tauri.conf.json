@@ -53,7 +53,7 @@
       "endpoints": [
         "https://github.com/Pardalesteban/sshpanel/releases/latest/download/latest.json"
       ],
-      "pubkey": "REPLACE_ME_AFTER_RUNNING_tauri_signer_generate",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEQxMTBGMkJBQ0E1RTZGRDIKUldUU2IxN0t1dklRMGZFb3ljRWVSYndUTGxOSXkyemRqVzF0ak5xNXc4dlM5TXJNMDlwazlVTDYK",
       "dialog": false
     }
   }

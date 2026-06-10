@@ -96,9 +96,10 @@
   - [x] Estados completos: idle / checking / uptodate / available / downloading (con progress bar) / ready / error
   - [x] Botón **"Buscar actualizaciones"** manual en el footer del AboutPanel
   - [x] Item "Acerca de" en el footer del Sidebar para abrir el panel
-- [ ] **Firma + Servidor de metadatos** (requiere acción del user):
-  - [ ] Correr `pnpm tauri signer generate -w ~/.tauri/sshpanel.key` localmente para generar el par de claves
-  - [ ] Pegar la **clave pública** en `tauri.conf.json` → `plugins.updater.pubkey` (reemplazar el placeholder `REPLACE_ME_AFTER_RUNNING_tauri_signer_generate`)
-  - [ ] Guardar la **clave privada** como secret de GitHub `TAURI_SIGNING_PRIVATE_KEY` (y su password como `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`)
-  - [ ] Agregar step al `release.yml` que use esas envs para firmar los artifacts (Tauri lo hace automático si las envs están seteadas)
-  - [ ] Agregar generación de `latest.json` como asset del Release (el workflow `tauri-action` lo genera con `--include-debug=false`)
+- [x] **Firma + Servidor de metadatos**:
+  - [x] Par de claves minisign generado (`~/.tauri/sshpanel.key` + `.pub`) con password fuerte
+  - [x] Clave pública pegada en `tauri.conf.json` → `plugins.updater.pubkey`
+  - [x] Step de build en `release.yml` lee `TAURI_SIGNING_PRIVATE_KEY` + `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` de secrets — Tauri firma automáticamente si están presentes (degrada graciosamente a build sin firma si no)
+  - [x] Artifact globs incluyen `*.sig` (firmas) para los formatos updater-capable
+  - [x] Step `Generate latest.json` arma el feed del updater desde los artifacts: lee cada `.sig`, mapea filename → key de plataforma (`darwin-*`, `linux-x86_64`, `windows-x86_64`), incluye URL de Release y notas del CHANGELOG. Publicado como asset del Release → URL `releases/latest/download/latest.json` queda fija para el endpoint del cliente.
+  - [ ] **Pegar 2 secrets en GitHub** (acción del user — instrucciones impresas tras commit)

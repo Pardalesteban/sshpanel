@@ -31,15 +31,19 @@ jobs:
           - os: ubuntu-latest
             artifact_glob: |
               web/src-tauri/target/release/bundle/appimage/*.AppImage
+              web/src-tauri/target/release/bundle/appimage/*.AppImage.sig
               web/src-tauri/target/release/bundle/deb/*.deb
           - os: macos-latest
             artifact_glob: |
               web/src-tauri/target/release/bundle/dmg/*.dmg
               web/src-tauri/target/release/bundle/macos/*.app.tar.gz
+              web/src-tauri/target/release/bundle/macos/*.app.tar.gz.sig
           - os: windows-latest
             artifact_glob: |
               web/src-tauri/target/release/bundle/msi/*.msi
+              web/src-tauri/target/release/bundle/msi/*.msi.sig
               web/src-tauri/target/release/bundle/nsis/*.exe
+              web/src-tauri/target/release/bundle/nsis/*.exe.sig
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -80,7 +84,13 @@ jobs:
         working-directory: web
         run: pnpm install --frozen-lockfile
 
-      - name: Build bundle
+      - name: Build bundle (signed if secrets present)
+        # Si los secrets están seteados, Tauri firma automáticamente los bundles
+        # y emite el .sig + actualiza el latest.json. Si NO están, hace build
+        # normal sin firmar — útil para forks o testing.
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         run: sshpanel app-build
         shell: bash
 
@@ -140,7 +150,8 @@ jobs:
         run: |
           mkdir -p release-assets
           find ./artifacts -type f \( -name "*.exe" -o -name "*.msi" -o -name "*.dmg" \
-            -o -name "*.AppImage" -o -name "*.deb" -o -name "*.tar.gz" \) \
+            -o -name "*.AppImage" -o -name "*.deb" -o -name "*.tar.gz" \
+            -o -name "*.sig" \) \
             -exec cp {} ./release-assets/ \;
           ls -la ./release-assets
 
@@ -159,6 +170,59 @@ jobs:
           fi
           echo "---"
           cat release_notes.md
+
+      - name: Generate latest.json (updater feed)
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          OWNER="${{ github.repository_owner }}"
+          REPO="${{ github.event.repository.name }}"
+          BASE_URL="https://github.com/$OWNER/$REPO/releases/download/${GITHUB_REF_NAME}"
+          python3 <<PY
+          import os, json, glob, datetime
+          version = "$VERSION"
+          base = "$BASE_URL"
+          # Mapeo: regex de filename → key de plataforma del updater de Tauri
+          rules = [
+              (r".*\.app\.tar\.gz$",                 "darwin-x86_64"),    # también sirve aarch64 con universal binary
+              (r".*\.app\.tar\.gz$",                 "darwin-aarch64"),
+              (r".*\.AppImage$",                     "linux-x86_64"),
+              (r".*-setup\.exe$",                    "windows-x86_64"),
+              (r".*\.msi$",                          "windows-x86_64"),
+          ]
+          import re
+          platforms = {}
+          for path in sorted(glob.glob("release-assets/*")):
+              name = os.path.basename(path)
+              if name.endswith(".sig"):
+                  continue
+              for pat, key in rules:
+                  if re.match(pat, name):
+                      sig_path = path + ".sig"
+                      if not os.path.exists(sig_path):
+                          continue
+                      with open(sig_path) as f:
+                          sig = f.read().strip()
+                      # No pisamos si una plataforma ya tiene asset (preferimos el primero del orden)
+                      if key in platforms:
+                          continue
+                      platforms[key] = {
+                          "signature": sig,
+                          "url": f"{base}/{name}",
+                      }
+                      break
+          notes = ""
+          if os.path.exists("release_notes.md"):
+              notes = open("release_notes.md").read()
+          feed = {
+              "version": version,
+              "notes": notes.strip(),
+              "pub_date": datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+              "platforms": platforms,
+          }
+          with open("release-assets/latest.json", "w") as f:
+              json.dump(feed, f, indent=2)
+          print(json.dumps(feed, indent=2))
+          PY
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
