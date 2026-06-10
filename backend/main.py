@@ -20,7 +20,7 @@ try:
     VERSION = pkg_version("sshpanel")
 except PackageNotFoundError:
     # Corriendo sin instalar el paquete (ej. imagen Docker con solo requirements)
-    VERSION = "0.2.0"
+    VERSION = "0.2.1"
 
 
 @asynccontextmanager

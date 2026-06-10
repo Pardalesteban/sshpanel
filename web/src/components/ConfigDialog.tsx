@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { X, Download, Upload, Lock } from "lucide-react";
 import { useEscapeClose } from "../lib/hooks";
+import { apiUrl } from "../lib/api";
 
 type Mode = "export" | "import" | null;
 
@@ -51,7 +52,7 @@ export function ConfigDialog() {
     setError(null);
     try {
       if (mode === "export") {
-        const res = await fetch("/api/hosts/export", {
+        const res = await fetch(apiUrl("/api/hosts/export"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ password }),
@@ -69,7 +70,7 @@ export function ConfigDialog() {
         const form = new FormData();
         form.append("file", file);
         form.append("password", password);
-        const res = await fetch("/api/hosts/import", {
+        const res = await fetch(apiUrl("/api/hosts/import"), {
           method: "POST",
           body: form,
         });

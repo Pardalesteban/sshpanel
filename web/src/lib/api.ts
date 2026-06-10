@@ -19,7 +19,28 @@ export interface HostCreate {
   tags?: string;
 }
 
-const API = "/api";
+// En el desktop (Tauri) el frontend se sirve desde el protocolo de assets
+// (tauri.localhost), así que las URLs relativas NUNCA llegan al sidecar —
+// Tauri devuelve index.html como fallback SPA y el JSON.parse explota con
+// "Unexpected token '<'". Detectamos Tauri y apuntamos al backend explícito.
+// El sidecar escucha en 127.0.0.1:8080 (SSHPANEL_PORT default del entrypoint).
+const IS_TAURI =
+  typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
+const BACKEND = IS_TAURI ? "http://127.0.0.1:8080" : "";
+
+const API = `${BACKEND}/api`;
+
+/** URL absoluta hacia el backend para fetch() fuera del wrapper `request`. */
+export function apiUrl(path: string): string {
+  return `${BACKEND}${path}`;
+}
+
+/** URL de WebSocket hacia el backend. `path` debe empezar con `/api/...`. */
+export function wsUrl(path: string): string {
+  if (IS_TAURI) return `ws://127.0.0.1:8080${path}`;
+  const proto = window.location.protocol === "https:" ? "wss:" : "ws:";
+  return `${proto}//${window.location.host}${path}`;
+}
 
 export class APIError extends Error {
   status: number;

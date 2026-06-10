@@ -16,7 +16,7 @@ import {
 import { Terminal as XTerm } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
 import "@xterm/xterm/css/xterm.css";
-import { api, type ComposeProject, type ComposeService, type ComposeAction } from "../lib/api";
+import { api, wsUrl, type ComposeProject, type ComposeService, type ComposeAction } from "../lib/api";
 import { cn } from "../lib/utils";
 
 interface Props {
@@ -322,9 +322,10 @@ function ActionStreamDrawer({
     termRef.current = term;
 
     const files = project.ConfigFiles.split(",").map((f) => f.trim()).filter(Boolean);
-    const proto = window.location.protocol === "https:" ? "wss:" : "ws:";
     const ws = new WebSocket(
-      `${proto}//${window.location.host}/api/hosts/${hostId}/compose/projects/${encodeURIComponent(project.Name)}/action/${action}`
+      wsUrl(
+        `/api/hosts/${hostId}/compose/projects/${encodeURIComponent(project.Name)}/action/${action}`
+      )
     );
     wsRef.current = ws;
 

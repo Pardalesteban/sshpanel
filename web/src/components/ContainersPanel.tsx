@@ -11,7 +11,7 @@ import {
   Cpu,
   MemoryStick,
 } from "lucide-react";
-import { api, APIError, type DockerContainer, type ContainerStats } from "../lib/api";
+import { api, APIError, wsUrl, type DockerContainer, type ContainerStats } from "../lib/api";
 import { InstallDockerModal } from "./InstallDockerModal";
 import { Sparkline } from "./Sparkline";
 import { cn } from "../lib/utils";
@@ -67,9 +67,8 @@ export function ContainersPanel({ hostId, hostName = "", onOpenLogs }: Props) {
   useEffect(() => {
     if (dockerMissing) return;
     setStatsHistory({});
-    const proto = window.location.protocol === "https:" ? "wss:" : "ws:";
     const ws = new WebSocket(
-      `${proto}//${window.location.host}/api/hosts/${hostId}/docker/stats/stream`
+      wsUrl(`/api/hosts/${hostId}/docker/stats/stream`)
     );
     wsRef.current = ws;
     ws.onmessage = (e) => {

@@ -3,6 +3,7 @@ import { Terminal as XTerm } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
 import { WebLinksAddon } from "@xterm/addon-web-links";
 import "@xterm/xterm/css/xterm.css";
+import { wsUrl } from "../lib/api";
 
 interface Props {
   hostId: string;
@@ -66,10 +67,7 @@ export function SSHTerminal({ hostId, hostName }: Props) {
     termRef.current = term;
     fitRef.current = fit;
 
-    const proto = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const ws = new WebSocket(
-      `${proto}//${window.location.host}/api/hosts/${hostId}/terminal/`
-    );
+    const ws = new WebSocket(wsUrl(`/api/hosts/${hostId}/terminal/`));
     wsRef.current = ws;
 
     ws.onopen = () => {

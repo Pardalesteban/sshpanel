@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Cpu, MemoryStick, HardDrive, Activity, Zap, Clock, Search, Skull, ShieldAlert, Check, X } from "lucide-react";
-import { api, APIError, type SystemSnapshot, type ProcessInfo } from "../lib/api";
+import { api, APIError, wsUrl, type SystemSnapshot, type ProcessInfo } from "../lib/api";
 import { Sparkline } from "./Sparkline";
 import { setLatency, clearLatency } from "../lib/latencyStore";
 import { cn } from "../lib/utils";
@@ -33,10 +33,7 @@ export function SystemPanel({ hostId }: Props) {
   const wsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
-    const proto = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const ws = new WebSocket(
-      `${proto}//${window.location.host}/api/hosts/${hostId}/system/stream`
-    );
+    const ws = new WebSocket(wsUrl(`/api/hosts/${hostId}/system/stream`));
     wsRef.current = ws;
 
     ws.onopen = () => setStatus("open");

@@ -4,6 +4,7 @@ import { FitAddon } from "@xterm/addon-fit";
 import { X, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 import "@xterm/xterm/css/xterm.css";
 import { useEscapeClose } from "../lib/hooks";
+import { wsUrl } from "../lib/api";
 
 interface Props {
   hostId: string;
@@ -71,10 +72,7 @@ export function InstallDockerModal({ hostId, hostName, open, onClose, onDone }: 
     fit.fit();
     termRef.current = term;
 
-    const proto = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const ws = new WebSocket(
-      `${proto}//${window.location.host}/api/hosts/${hostId}/docker/install`
-    );
+    const ws = new WebSocket(wsUrl(`/api/hosts/${hostId}/docker/install`));
     wsRef.current = ws;
     setStatus("installing");
 

@@ -8,8 +8,22 @@ This file is the source of truth consumed by the in-app update viewer (Fase 6).
 
 ## [Unreleased]
 
+_Nothing yet — open a discussion or issue if you have ideas._
+
+## [0.2.1] — 2026-06-10
+
 ### Fixed
 
+- **Desktop app could not reach its own backend** — API and WebSocket URLs
+  were relative, which inside Tauri resolved against the asset protocol
+  (`tauri.localhost`) instead of the Python sidecar; every request got
+  `index.html` back ("Unexpected token '<' … is not valid JSON"). The web
+  client now detects Tauri and targets `127.0.0.1:8080` explicitly —
+  terminals, Docker, system stats, compose, export/import all work in the
+  desktop app.
+- The macOS updater artifact is now published as `darwin-aarch64`
+  (macos-latest runners are Apple Silicon); it was wrongly listed as
+  `darwin-x86_64`, which would hand Intel Macs an ARM binary.
 - **No more error banner on app start when the update feed is unusable** —
   automatic update checks now fail silently (console only), and a feed
   without binaries for the current platform (unsigned release) is treated

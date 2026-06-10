@@ -3,6 +3,7 @@ import { Terminal as XTerm } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
 import { X, Pause, Play, Eraser } from "lucide-react";
 import "@xterm/xterm/css/xterm.css";
+import { wsUrl } from "../lib/api";
 
 interface Props {
   hostId: string;
@@ -81,9 +82,8 @@ export function ContainerLogs({ hostId, containerId, containerName, onClose }: P
       return true;
     });
 
-    const proto = window.location.protocol === "https:" ? "wss:" : "ws:";
     const ws = new WebSocket(
-      `${proto}//${window.location.host}/api/hosts/${hostId}/docker/containers/${containerId}/logs`
+      wsUrl(`/api/hosts/${hostId}/docker/containers/${containerId}/logs`)
     );
     wsRef.current = ws;
 
