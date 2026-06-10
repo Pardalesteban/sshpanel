@@ -10,6 +10,18 @@ This file is the source of truth consumed by the in-app update viewer (Fase 6).
 
 _Nothing yet — open a discussion or issue if you have ideas._
 
+## [0.2.2] — 2026-06-10
+
+### Fixed
+
+- **Desktop backend sidecar crashed on startup** with
+  `ModuleNotFoundError: No module named 'backend'` — PyInstaller cannot
+  follow uvicorn's string import (`"backend.main:app"`), so the `backend`
+  package was never bundled into the sidecar binary. The entrypoint now
+  imports the app directly and the build collects the `backend` package
+  explicitly. This was the root cause of "Failed to fetch" in the desktop
+  app: there was no backend listening at all.
+
 ## [0.2.1] — 2026-06-10
 
 ### Fixed

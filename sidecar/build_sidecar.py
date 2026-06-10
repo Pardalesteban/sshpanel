@@ -50,6 +50,11 @@ def main():
             "--distpath", str(BINARIES_DIR),
             "--workpath", str(WEB_TAURI / "build_work"),
             "--specpath", str(WEB_TAURI / "build_work"),
+            # El paquete `backend` vive en ROOT, no junto al entrypoint —
+            # sin esto PyInstaller no lo encuentra y el exe muere al arrancar
+            # con ModuleNotFoundError.
+            "--paths", str(ROOT),
+            "--collect-submodules", "backend",
             # Imports que PyInstaller no detecta solo
             "--hidden-import", "uvicorn.logging",
             "--hidden-import", "uvicorn.loops.auto",

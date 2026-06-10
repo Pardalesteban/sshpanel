@@ -5,3 +5,5 @@ Cargo.lock
 
 # Source icon (regenerable)
 icons/source.png
+binaries/
+build_work/
