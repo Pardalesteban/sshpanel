@@ -37,21 +37,21 @@ class DockerManager:
         return [json.loads(line) for line in output.strip().splitlines() if line]
 
     async def inspect(self, container_id: str) -> dict:
-        output = await self._run(f"docker inspect {container_id}")
+        output = await self._run(f"docker inspect {shlex_quote(container_id)}")
         return json.loads(output)[0]
 
     async def start(self, container_id: str) -> str:
-        return await self._run(f"docker start {container_id}")
+        return await self._run(f"docker start {shlex_quote(container_id)}")
 
     async def stop(self, container_id: str) -> str:
-        return await self._run(f"docker stop {container_id}")
+        return await self._run(f"docker stop {shlex_quote(container_id)}")
 
     async def restart(self, container_id: str) -> str:
-        return await self._run(f"docker restart {container_id}")
+        return await self._run(f"docker restart {shlex_quote(container_id)}")
 
     async def remove(self, container_id: str, force: bool = False) -> str:
         flag = "-f" if force else ""
-        return await self._run(f"docker rm {flag} {container_id}")
+        return await self._run(f"docker rm {flag} {shlex_quote(container_id)}")
 
     async def _stream(self, command: str) -> AsyncGenerator[str, None]:
         docker = await self._docker()
@@ -61,28 +61,32 @@ class DockerManager:
 
     async def stream_logs(self, container_id: str, tail: int = 100) -> AsyncGenerator[str, None]:
         async for line in self._stream(
-            f"docker logs -f --tail={tail} {container_id}"
+            f"docker logs -f --tail={int(tail)} {shlex_quote(container_id)}"
         ):
             yield line
 
     async def exec(self, container_id: str, command: str) -> str:
-        return await self._run(f"docker exec {container_id} {command}")
+        return await self._run(f"docker exec {shlex_quote(container_id)} {command}")
 
     async def list_images(self) -> list[dict]:
         output = await self._run("docker images --format '{{json .}}'")
         return [json.loads(line) for line in output.strip().splitlines() if line]
 
     async def pull(self, image: str) -> AsyncGenerator[str, None]:
-        async for line in self._stream(f"docker pull {image}"):
+        async for line in self._stream(f"docker pull {shlex_quote(image)}"):
             yield line
 
     async def compose_up(self, path: str, detach: bool = True) -> AsyncGenerator[str, None]:
         flag = "-d" if detach else ""
-        async for line in self._stream(f"docker compose -f {path} up {flag}"):
+        async for line in self._stream(
+            f"docker compose -f {shlex_quote(path)} up {flag}"
+        ):
             yield line
 
     async def compose_down(self, path: str) -> AsyncGenerator[str, None]:
-        async for line in self._stream(f"docker compose -f {path} down"):
+        async for line in self._stream(
+            f"docker compose -f {shlex_quote(path)} down"
+        ):
             yield line
 
     # --- Compose v2 (descubrimiento + acciones genéricas) ---
@@ -148,7 +152,7 @@ class DockerManager:
             yield line
 
     async def stats(self, container_id: str = "") -> list[dict]:
-        target = container_id if container_id else "--all"
+        target = shlex_quote(container_id) if container_id else "--all"
         output = await self._run(
             f"docker stats {target} --no-stream --format '{{{{json .}}}}'"
         )

@@ -434,7 +434,7 @@ def config():
 @click.option("--output", default="sshpanel-config.enc")
 def config_export(password, output):
     _ensure_server()
-    response = httpx.get(f"{API_URL}/hosts/export", params={"password": password})
+    response = httpx.post(f"{API_URL}/hosts/export", json={"password": password})
     response.raise_for_status()
     with open(output, "wb") as f:
         f.write(response.content)
@@ -447,7 +447,7 @@ def config_export(password, output):
 def config_import(file_path, password):
     _ensure_server()
     with open(file_path, "rb") as f:
-        result = _api("post", "/hosts/import", params={"password": password}, files={"file": f})
+        result = _api("post", "/hosts/import", data={"password": password}, files={"file": f})
     console.print(f"[green]{result['hosts_imported']} hosts importados[/]")
 
 

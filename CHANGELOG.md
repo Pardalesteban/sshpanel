@@ -8,7 +8,33 @@ This file is the source of truth consumed by the in-app update viewer (Fase 6).
 
 ## [Unreleased]
 
-_Nothing yet — open a discussion or issue if you have ideas._
+### Security
+
+- **Restricted CORS** — the API no longer allows any browser origin (`*`).
+  Default whitelist covers the Tauri desktop app, the Vite dev server and
+  `localhost:8080`; extra origins via `SSHPANEL_CORS_ORIGINS` env var.
+- **Shell-quoting of remote command parameters** — container IDs, image names
+  and compose file paths are now escaped before being interpolated into the
+  remote shell; compose `extra` flags are validated against a character
+  whitelist. Closes a command-injection vector through the API.
+- **Passwords no longer travel in query strings** — `/hosts/export` is now a
+  POST with a JSON body and `/hosts/import` takes the password as a form
+  field (query params end up in access logs and browser history).
+
+### Fixed
+
+- **Release pipeline** — the GitHub Release job failed because
+  `download-artifact` also tried to download the `.dockerbuild` build-record
+  artifact uploaded by `docker/build-push-action`. Artifacts are now filtered
+  with `pattern: desktop-*` and the build record is no longer uploaded.
+- Concurrent requests to the same host no longer open duplicate SSH
+  connections (per-host lock in the pool).
+- `last_connected` is now actually updated when a host connects.
+
+### Changed
+
+- FastAPI startup migrated from the deprecated `@app.on_event` to the
+  lifespan API; app version now comes from package metadata (single source).
 
 ## [0.1.0] — 2026-06-10
 

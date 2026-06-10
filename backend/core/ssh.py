@@ -74,6 +74,19 @@ class SSHConnection:
             )
         return result.stdout
 
+    async def run_result(self, command: str, input: Optional[str] = None):
+        """Como run() pero devuelve el resultado completo (stdout, stderr,
+        exit_status) sin levantar excepción en exit != 0."""
+        if not self.is_connected:
+            await self.connect()
+        return await self._conn.run(command, input=input, check=False)
+
+    async def start_process(self, command: str, **kwargs):
+        """Crea un proceso remoto (para streaming interactivo de stdin/stdout)."""
+        if not self.is_connected:
+            await self.connect()
+        return self._conn.create_process(command, **kwargs)
+
     async def stream(self, command: str) -> AsyncGenerator[str, None]:
         if not self.is_connected:
             await self.connect()
@@ -153,15 +166,20 @@ class SSHPool:
 
     def __init__(self):
         self._connections: dict[str, SSHConnection] = {}
+        self._locks: dict[str, asyncio.Lock] = {}
 
     async def get(self, profile: SSHProfile) -> SSHConnection:
-        conn = self._connections.get(profile.id)
-        if conn and conn.is_connected:
+        # Lock por host: sin esto, N requests simultáneas al mismo host
+        # abrían N conexiones y N-1 quedaban huérfanas (leak de sockets).
+        lock = self._locks.setdefault(profile.id, asyncio.Lock())
+        async with lock:
+            conn = self._connections.get(profile.id)
+            if conn and conn.is_connected:
+                return conn
+            conn = SSHConnection(profile)
+            await conn.connect()
+            self._connections[profile.id] = conn
             return conn
-        conn = SSHConnection(profile)
-        await conn.connect()
-        self._connections[profile.id] = conn
-        return conn
 
     async def disconnect(self, profile_id: str):
         conn = self._connections.pop(profile_id, None)

@@ -132,6 +132,10 @@ jobs:
 
       - name: Build and push
         uses: docker/build-push-action@v6
+        env:
+          # No subir el artifact ".dockerbuild" (build record): no lo usamos y
+          # su descarga rompía el job release (download-artifact bajaba todo).
+          DOCKER_BUILD_RECORD_UPLOAD: false
         with:
           context: .
           platforms: linux/amd64,linux/arm64
@@ -152,6 +156,9 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
+          # Solo los bundles de desktop — sin pattern bajaba también el
+          # ".dockerbuild" del job docker y su download fallaba.
+          pattern: desktop-*
           path: ./artifacts
 
       - name: Flatten artifact dir
@@ -188,6 +195,7 @@ jobs:
           python3 <<PY
           import os, json, glob, datetime
           version = "$VERSION"
+          now_utc = datetime.datetime.now(datetime.timezone.utc)
           base = "$BASE_URL"
           # Mapeo: regex de filename → key de plataforma del updater de Tauri
           rules = [
@@ -224,7 +232,7 @@ jobs:
           feed = {
               "version": version,
               "notes": notes.strip(),
-              "pub_date": datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+              "pub_date": now_utc.strftime("%Y-%m-%dT%H:%M:%SZ"),
               "platforms": platforms,
           }
           with open("release-assets/latest.json", "w") as f:

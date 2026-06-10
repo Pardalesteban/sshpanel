@@ -1,5 +1,6 @@
 import uuid
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
+from datetime import datetime, timezone
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
 from fastapi.responses import Response
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
@@ -147,6 +148,8 @@ async def connect_host(host_id: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Host no encontrado")
     try:
         await pool.get(host_to_profile(host))
+        host.last_connected = datetime.now(timezone.utc)
+        db.commit()
         return {"ok": True, "connected": True}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -175,7 +178,7 @@ async def exec_command(
         raise HTTPException(status_code=404, detail="Host no encontrado")
     try:
         conn = await pool.get(host_to_profile(host))
-        result = await conn._conn.run(data.command, check=False)
+        result = await conn.run_result(data.command)
         return {
             "command": data.command,
             "stdout": result.stdout,
@@ -188,10 +191,17 @@ async def exec_command(
 
 # --- Export / Import ---
 
-@router.get("/export")
-def export(password: str, db: Session = Depends(get_db)):
+class ExportRequest(BaseModel):
+    password: str
+
+
+@router.post("/export")
+def export(req: ExportRequest, db: Session = Depends(get_db)):
     """Exporta todos los hosts (con passwords descifradas + recifradas con la
-    contraseña del usuario) para que el archivo sea portable entre instancias."""
+    contraseña del usuario) para que el archivo sea portable entre instancias.
+    POST con body JSON — la password nunca viaja en el query string (los query
+    params quedan en access logs, historial y proxies)."""
+    password = req.password
     hosts = db.query(Host).all()
     payload = {
         "hosts": [
@@ -219,16 +229,18 @@ def export(password: str, db: Session = Depends(get_db)):
 
 @router.post("/import")
 async def import_cfg(
-    password: str,
+    password: str = Form(...),
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
 ):
-    """Importa hosts desde un archivo cifrado. Hace upsert por id."""
+    """Importa hosts desde un archivo cifrado. Hace upsert por id.
+    La password viene como form field (no query string) por el mismo motivo
+    que en /export."""
     contents = await file.read()
     try:
         config = decrypt_payload(contents, password)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Archivo inválido o contraseña incorrecta")
+    except Exception:
+        raise HTTPException(status_code=400, detail="Archivo inválido o contraseña incorrecta")
 
     imported = 0
     updated = 0

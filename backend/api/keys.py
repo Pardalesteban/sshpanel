@@ -120,7 +120,7 @@ async def install_key(
         conn = await pool.get(host_to_profile(host))
         # Pasamos la pública por stdin para evitar issues de escape
         cmd = f"bash -c {shlex.quote(_INSTALL_SCRIPT)}"
-        result = await conn._conn.run(cmd, input=public_key + "\n", check=False)
+        result = await conn.run_result(cmd, input=public_key + "\n")
         output = (result.stdout or "") + (result.stderr or "")
         if result.exit_status not in (0, None):
             raise HTTPException(

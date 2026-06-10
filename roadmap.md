@@ -103,3 +103,16 @@
   - [x] Artifact globs incluyen `*.sig` (firmas) para los formatos updater-capable
   - [x] Step `Generate latest.json` arma el feed del updater desde los artifacts: lee cada `.sig`, mapea filename → key de plataforma (`darwin-*`, `linux-x86_64`, `windows-x86_64`), incluye URL de Release y notas del CHANGELOG. Publicado como asset del Release → URL `releases/latest/download/latest.json` queda fija para el endpoint del cliente.
   - [ ] **Pegar 2 secrets en GitHub** (acción del user — instrucciones impresas tras commit)
+- [x] **Fix release pipeline** — `download-artifact` bajaba también el artifact `.dockerbuild` (build record de `docker/build-push-action@v6`) y su descarga fallaba tras 5 retries, tirando el job release. Ahora filtra con `pattern: desktop-*` y el build record no se sube (`DOCKER_BUILD_RECORD_UPLOAD: false`).
+
+## Fase 7 — Hardening (seguridad + robustez)
+- [x] **CORS restrictivo** — antes `allow_origins=["*"]` (cualquier web podía llamar la API sin auth desde el browser del user). Ahora whitelist: orígenes Tauri + Vite dev + localhost:8080, extensible vía env `SSHPANEL_CORS_ORIGINS` (coma-separados).
+- [x] **Shell-quoting de parámetros remotos** — `container_id`, `image` y paths de compose se escapan con `shlex.quote` en `DockerManager`; el campo `extra` de compose se valida por whitelist de caracteres. Cierra inyección de comandos via API.
+- [x] **Passwords fuera del query string** — `/hosts/export` ahora es POST con body JSON y `/hosts/import` recibe la password como form field (antes quedaban en access logs / historial). CLI y web actualizados.
+- [x] **SSHPool con lock por host** — requests concurrentes al mismo host ya no abren conexiones duplicadas (leak de sockets).
+- [x] **API pública de SSHConnection** (`run_result`, `start_process`) — los endpoints ya no acceden a `conn._conn` privado.
+- [x] **Lifespan en vez de `@app.on_event`** (deprecado en FastAPI) + versión única desde `importlib.metadata` (antes hardcodeada en 2 lugares).
+- [x] `last_connected` se actualiza al conectar (la columna existía pero nunca se escribía).
+- [ ] Verificación de host keys SSH (hoy `known_hosts=None` — TOFU: guardar fingerprint en la primera conexión y validar después)
+- [ ] Autenticación opcional de la API (token/password) para despliegues en VPS expuestos
+- [ ] Tests reales del backend (pytest + TestClient: CRUD hosts, export/import round-trip, parsers de docker stats)

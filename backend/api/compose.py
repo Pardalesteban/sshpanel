@@ -6,6 +6,7 @@ del frontend incluye estos dos campos y el backend los pasa al CLI con
 (pull, scale, restart un solo servicio) = agregar un valor más al enum.
 """
 import logging
+import re
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, WebSocket, WebSocketDisconnect
 from pydantic import BaseModel
@@ -20,6 +21,15 @@ router = APIRouter(prefix="/hosts/{host_id}/compose", tags=["compose"])
 
 # Acciones permitidas — whitelist explícita para evitar inyección por el path.
 _ALLOWED_ACTIONS = {"up", "down", "restart", "pull", "stop", "start"}
+# `extra` va al shell remoto: solo flags/valores simples, nada de ; | & $ ` etc.
+_EXTRA_TOKEN_RE = re.compile(r"^[A-Za-z0-9@:.,_=/-]+$")
+
+
+def _sanitize_extra(extra: str) -> str:
+    tokens = extra.split()
+    if not all(_EXTRA_TOKEN_RE.match(t) for t in tokens):
+        raise ValueError(f"flags extra inválidos: {extra!r}")
+    return " ".join(tokens)
 # Algunas se benefician de detach para no quedarse colgadas
 _DETACH_FOR = {"up", "start", "restart"}
 
@@ -101,7 +111,12 @@ async def stream_action(
         return
 
     files = list(init.get("files") or [])
-    extra = (init.get("extra") or "").strip()
+    try:
+        extra = _sanitize_extra((init.get("extra") or "").strip())
+    except ValueError as e:
+        await websocket.send_text(f"[ERROR] {e}\r\n")
+        await websocket.close()
+        return
     if action in _DETACH_FOR and "-d" not in extra and "--detach" not in extra:
         extra = (extra + " -d").strip()
 

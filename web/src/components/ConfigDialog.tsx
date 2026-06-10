@@ -48,9 +48,11 @@ export function ConfigDialog() {
     setError(null);
     try {
       if (mode === "export") {
-        const res = await fetch(
-          `/api/hosts/export?password=${encodeURIComponent(password)}`
-        );
+        const res = await fetch("/api/hosts/export", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password }),
+        });
         if (!res.ok) throw new Error("Error exportando la config");
         const blob = await res.blob();
         const url = URL.createObjectURL(blob);
@@ -63,10 +65,11 @@ export function ConfigDialog() {
       } else if (mode === "import" && file) {
         const form = new FormData();
         form.append("file", file);
-        const res = await fetch(
-          `/api/hosts/import?password=${encodeURIComponent(password)}`,
-          { method: "POST", body: form }
-        );
+        form.append("password", password);
+        const res = await fetch("/api/hosts/import", {
+          method: "POST",
+          body: form,
+        });
         if (!res.ok) {
           const t = await res.text();
           throw new Error(t || "Error importando");

@@ -208,7 +208,7 @@ async def install_docker(
         # shlex.quote escapa para shell (preserva newlines y comillas reales).
         cmd = f"bash -lc {shlex.quote(INSTALL_SCRIPT)}"
         # stderr=STDOUT para que veas errores en el log inline
-        async with conn._conn.create_process(
+        async with await conn.start_process(
             cmd, stderr=_asyncssh.STDOUT
         ) as process:
             # Primera línea de stdin = sudo password (la lee `read SUDO_PWD`)
