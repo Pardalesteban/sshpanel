@@ -200,6 +200,14 @@ Para que los clientes instalados puedan recibir updates firmadas:
   corepack instalando pnpm con `npm install -g pnpm@10.33.4`. Si actualizás
   pnpm, sincronizá el `packageManager` del `package.json` y el comando del
   Dockerfile.
+- **`find: './artifacts': No such file` en el job final** = los jobs desktop
+  no subieron bundles. Pasó en v0.4.0: un crate transitivo recién publicado
+  (`time 0.3.48`) rompía la compilación de `tauri-utils`, y `sshpanel
+  app-build` tragaba el error (exit 0). Desde entonces: `Cargo.lock` está
+  **commiteado** (CI usa las mismas versiones que local — si actualizás
+  deps de Rust, commiteá el lock), `app-build` sale con exit 1 si falla, y
+  el upload de artifacts usa `if-no-files-found: error`. Si un build desktop
+  tarda ~2 min en vez de 10+, sospechá de esto.
 
 ### Hotfix release (versión patch)
 

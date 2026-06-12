@@ -214,7 +214,7 @@ def app_build():
         )
     except subprocess.CalledProcessError:
         console.print("[red]Falló el empaquetado del sidecar.[/]")
-        return
+        sys.exit(1)
 
     # 2. Compilar Tauri con el override que activa el sidecar
     console.print("[cyan][2/2] Compilando bundle desktop (puede tardar 5-15 min)…[/]")
@@ -231,6 +231,7 @@ def app_build():
         )
     except subprocess.CalledProcessError:
         console.print("[red]Compilación falló — revisá el output.[/]")
+        sys.exit(1)
 
 
 @cli.command("install")

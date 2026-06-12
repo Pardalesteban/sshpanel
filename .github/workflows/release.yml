@@ -99,7 +99,7 @@ jobs:
         with:
           name: desktop-${{ matrix.os }}
           path: ${{ matrix.artifact_glob }}
-          if-no-files-found: warn
+          if-no-files-found: error
 
   # 2) Buildea + publica la imagen Docker multi-arch (amd64 + arm64) en GHCR.
   docker:

@@ -27,7 +27,6 @@ web/.vite/
 
 # Tauri
 web/src-tauri/target/
-web/src-tauri/Cargo.lock
 sidecar/build/
 sidecar/dist/
 sidecar/*.spec
