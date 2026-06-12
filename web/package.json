@@ -1,7 +1,7 @@
 {
   "name": "sshpanel-web",
   "private": true,
-  "version": "0.2.2",
+  "version": "0.3.0",
   "type": "module",
   "packageManager": "pnpm@10.33.4",
   "scripts": {

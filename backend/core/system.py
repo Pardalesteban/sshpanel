@@ -27,7 +27,7 @@ df -k 2>/dev/null | awk 'NR>1 && $1 ~ /^\// {print $1, $2, $3, $4, $6}'
 echo '#NET'
 cat /proc/net/dev 2>/dev/null | awk 'NR>2 {print $1, $2, $10}'
 echo '#PROC'
-ps -eo pid,user,pcpu,pmem,comm --sort=-pcpu 2>/dev/null | head -16
+ps -eo pid,user,pcpu,pmem,rss,comm --sort=-pcpu 2>/dev/null | head -16
 echo '#END'
 """
 
@@ -51,7 +51,7 @@ df -k 2>/dev/null | awk 'NR>1 && $1 ~ /^\// {print $1, $2, $3, $4, $NF}'
 echo '#NET'
 netstat -ibn 2>/dev/null | awk 'NR>1 && $1 !~ /^lo/ && $4 !~ /Link/ {print $1, $7, $10}' | sort -u
 echo '#PROC'
-ps -axo pid,user,pcpu,pmem,comm 2>/dev/null | sort -k3 -nr | head -16
+ps -axo pid,user,pcpu,pmem,rss,comm 2>/dev/null | sort -k3 -nr | head -16
 echo '#END'
 """
 
@@ -79,6 +79,7 @@ class ProcessInfo:
     user: str
     cpu_percent: float
     mem_percent: float
+    mem_kb: int
     command: str
 
 
@@ -319,8 +320,8 @@ class SystemMonitor:
 
     def _parse_proc(self, text: str, snap: SystemSnapshot):
         for line in text.splitlines()[1:]:  # skip header
-            parts = line.strip().split(None, 4)
-            if len(parts) < 5:
+            parts = line.strip().split(None, 5)
+            if len(parts) < 6:
                 continue
             try:
                 snap.top_processes.append(
@@ -329,7 +330,8 @@ class SystemMonitor:
                         user=parts[1],
                         cpu_percent=float(parts[2]),
                         mem_percent=float(parts[3]),
-                        command=parts[4],
+                        mem_kb=int(parts[4]),
+                        command=parts[5],
                     )
                 )
             except ValueError:

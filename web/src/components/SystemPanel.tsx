@@ -291,6 +291,7 @@ function ProcessTable({ processes, filter, hostId }: { processes: ProcessInfo[];
             <th className="px-3 py-1.5 text-left font-medium">USER</th>
             <th className="px-3 py-1.5 text-right font-medium">CPU%</th>
             <th className="px-3 py-1.5 text-right font-medium">MEM%</th>
+            <th className="px-3 py-1.5 text-right font-medium">MEM</th>
             <th className="px-3 py-1.5 text-left font-medium">COMMAND</th>
             <th className="w-10 px-2 py-1.5"></th>
           </tr>
@@ -319,6 +320,7 @@ function ProcessTable({ processes, filter, hostId }: { processes: ProcessInfo[];
                   {p.cpu_percent.toFixed(1)}
                 </td>
                 <td className="px-3 py-1 text-right text-text-primary">{p.mem_percent.toFixed(1)}</td>
+                <td className="px-3 py-1 text-right text-text-muted">{formatBytes(p.mem_kb * 1024)}</td>
                 <td className="truncate px-3 py-1 text-text-primary">{p.command}</td>
                 <td className="px-2 py-1">
                   <KillCell
@@ -334,7 +336,7 @@ function ProcessTable({ processes, filter, hostId }: { processes: ProcessInfo[];
           })}
           {filtered.length === 0 && (
             <tr>
-              <td colSpan={6} className="px-3 py-4 text-center text-text-dim">
+              <td colSpan={7} className="px-3 py-4 text-center text-text-dim">
                 Sin coincidencias
               </td>
             </tr>

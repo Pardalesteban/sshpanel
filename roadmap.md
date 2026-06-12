@@ -28,6 +28,7 @@
 - [x] Persistencia de tab por host + recordada en localStorage
 - [x] Terminales SSH persistentes (todas las abiertas mantienen sesión + scrollback al cambiar de host/tab)
 - [x] Resize de terminal SSH (FitAddon + mensaje JSON al backend + asyncssh change_terminal_size)
+- [x] Terminal multi-pestaña por host (TerminalWorkspace) — varias sesiones SSH como solapas estilo Windows Terminal, botón "+", cerrar, atajos Ctrl/Cmd+Shift+T (nueva) y Ctrl/Cmd+Shift+D (split), con opción de split para ver dos terminales a la vez. Cada sesión es un `create_process` independiente sobre la conexión del pool; todas persisten montadas
 - [x] Ejecutar comando arbitrario desde el palette (prefix `>`, modal con stdout/stderr/exit code, botón copiar)
 - [x] Persistencia de logs de containers (mismo patrón que terminales — 1 log activo por host, sobrevive cambios de tab/host)
 - [x] Wizard de instalación de Docker — si el remoto no tiene docker, mostrar card + botón que ejecuta `get.docker.com` via SSH con stream del output en vivo (xterm), con detección de sudo (NOPASSWD / password guardada con fallback a la SSH)

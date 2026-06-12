@@ -221,6 +221,7 @@ export interface ProcessInfo {
   user: string;
   cpu_percent: number;
   mem_percent: number;
+  mem_kb: number;
   command: string;
 }
 

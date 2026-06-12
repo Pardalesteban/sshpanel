@@ -10,6 +10,31 @@ This file is the source of truth consumed by the in-app update viewer (Fase 6).
 
 _Nothing yet — open a discussion or issue if you have ideas._
 
+## [0.3.0] — 2026-06-12
+
+### Added
+
+- **Terminal multi-pestaña por host** — la sección Terminal ahora funciona
+  como Windows Terminal: abrís varias sesiones SSH como solapas con el botón
+  **+**, cada una es una shell independiente sobre la misma conexión. Ideal
+  para correr varios scripts a la vez y ver varias cosas en paralelo. Todas
+  las sesiones persisten montadas (scrollback intacto) al cambiar de host o
+  de tab.
+- **Vista dividida (split)** — botón para partir la pantalla en dos
+  terminales lado a lado; hacés click en un panel para enfocarlo y elegís qué
+  sesión va en cada lado.
+- **Renombrar pestañas** — doble click sobre una solapa para ponerle un
+  nombre custom (Enter confirma, Esc cancela); el nombre se refleja también
+  en el header de la terminal.
+- **Cerrar pestañas con la rueda del mouse** — click central sobre una solapa
+  la cierra, igual que en los navegadores. Si cerrás la última, se crea una
+  nueva automáticamente.
+- **Atajos de terminal** — `Ctrl/Cmd+Shift+T` abre una pestaña nueva y
+  `Ctrl/Cmd+Shift+D` activa/desactiva el split.
+- **Memoria real por proceso en el tab Sistema** — la lista de procesos suma
+  una columna **MEM** con el consumo absoluto (RSS) auto-escalado en KB / MB /
+  GB según corresponda, además del porcentaje que ya mostraba.
+
 ## [0.2.2] — 2026-06-10
 
 ### Fixed

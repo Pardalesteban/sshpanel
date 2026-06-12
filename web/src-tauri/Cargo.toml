@@ -1,6 +1,6 @@
 [package]
 name = "sshpanel"
-version = "0.2.2"
+version = "0.3.0"
 description = "SSHPanel — Manager SSH + Docker"
 edition = "2021"
 rust-version = "1.77"

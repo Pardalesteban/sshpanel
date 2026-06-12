@@ -8,6 +8,8 @@ import { wsUrl } from "../lib/api";
 interface Props {
   hostId: string;
   hostName: string;
+  /** Texto a mostrar en el header. Por defecto `ssh — {hostName}`. */
+  label?: string;
 }
 
 // Paleta ANSI curada acorde al design system
@@ -35,7 +37,7 @@ const THEME = {
   brightWhite: "#f5f5f7",
 };
 
-export function SSHTerminal({ hostId, hostName }: Props) {
+export function SSHTerminal({ hostId, hostName, label }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const termRef = useRef<XTerm | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
@@ -187,7 +189,7 @@ export function SSHTerminal({ hostId, hostName }: Props) {
             <span className="h-2.5 w-2.5 rounded-full bg-brand-emerald/70" />
           </div>
           <span className="ml-2 font-mono text-xs text-text-muted">
-            ssh — {hostName}
+            {label ?? `ssh — ${hostName}`}
           </span>
         </div>
         <StatusPill status={status} />

@@ -3,7 +3,7 @@ import { Plug, PlugZap, Terminal, Box, Trash2, Info, Pencil, Activity, Key, Laye
 import type { Host } from "../lib/api";
 import { api } from "../lib/api";
 import { HostAvatar } from "./HostAvatar";
-import { SSHTerminal } from "./SSHTerminal";
+import { TerminalWorkspace } from "./TerminalWorkspace";
 import { ContainersPanel } from "./ContainersPanel";
 import { ContainerLogs } from "./ContainerLogs";
 import { SystemPanel } from "./SystemPanel";
@@ -241,7 +241,7 @@ export function HostDetail({
                 pointerEvents: active ? "auto" : "none",
               }}
             >
-              <SSHTerminal hostId={tid} hostName={tHost.name} />
+              <TerminalWorkspace hostId={tid} hostName={tHost.name} active={active} />
             </div>
           );
         })}
