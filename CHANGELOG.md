@@ -8,21 +8,26 @@ This file is the source of truth consumed by the in-app update viewer (Fase 6).
 
 ## [Unreleased]
 
+_Nothing yet — open a discussion or issue if you have ideas._
+
+## [0.4.1] — 2026-06-12
+
 ### Fixed
 
 - **La app ahora es single-instance** — abrir el .exe con la app ya
-  corriendo en el tray mostraba/duplicaba procesos: cada doble-click
-  spawneaba otra instancia completa (otra ventana, otro tray icon, otro
-  sidecar Python). Ahora la segunda instancia detecta a la primera, le
-  pasa el foco (muestra y enfoca la ventana existente) y muere al
-  instante. Un solo icono en el tray, siempre.
-
+  corriendo en el tray duplicaba procesos: cada doble-click spawneaba otra
+  instancia completa (otra ventana, otro tray icon, otro sidecar Python —
+  de ahí los iconos repetidos en el tray de Windows). Ahora la segunda
+  instancia detecta a la primera, le pasa el foco (muestra y enfoca la
+  ventana existente) y muere al instante. Un solo icono en el tray, siempre.
 - **El instalador ya no tira error de "archivo en uso" durante el
   auto-update en Windows** — el sidecar Python (`sshpanel-backend.exe`)
   seguía corriendo cuando NSIS intentaba sobreescribirlo. Ahora el update
   se descarga y verifica primero, después se mata el árbol completo del
   sidecar (`taskkill /T` — PyInstaller onefile spawnea un proceso hijo) y
-  recién entonces se lanza el instalador.
+  recién entonces se lanza el instalador. Nota: al actualizar **desde**
+  v0.4.0 el error puede aparecer una última vez (la update la ejecuta la
+  lógica vieja); de ahí en adelante queda resuelto.
 
 ## [0.4.0] — 2026-06-12
 
