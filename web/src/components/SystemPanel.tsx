@@ -214,17 +214,22 @@ function StatCard({
   sub?: string;
 }) {
   return (
-    <div className="relative overflow-hidden rounded-lg border border-border bg-bg-surface/50 p-4">
-      <div className="flex items-start justify-between">
+    <div className="group relative overflow-hidden rounded-lg border border-border bg-bg-surface/60 p-5 shadow-card transition hover:border-border-strong">
+      {/* Halo del color de la métrica, apenas perceptible */}
+      <div
+        className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full opacity-[0.07] blur-2xl transition group-hover:opacity-[0.12]"
+        style={{ background: color }}
+      />
+      <div className="relative flex items-start justify-between">
         <div>
           <div className="flex items-center gap-1.5" style={{ color }}>
             {icon}
             <span className="text-[10px] font-medium uppercase tracking-luxe">{label}</span>
           </div>
-          <div className="mt-1 font-mono text-lg font-medium text-text-primary">
+          <div className="mt-2 font-mono text-2xl font-semibold tracking-tight text-text-primary">
             {value}
           </div>
-          {sub && <div className="font-mono text-[10px] text-text-dim">{sub}</div>}
+          {sub && <div className="mt-0.5 font-mono text-[11px] text-text-dim">{sub}</div>}
         </div>
         <Sparkline values={series} color={color} max={max} width={140} height={44} />
       </div>
@@ -238,7 +243,7 @@ function DiskBar({ disk }: { disk: { mount: string; device: string; percent: num
     : disk.percent >= 75 ? "bg-brand-amber"
     : "bg-brand-emerald";
   return (
-    <div className="flex items-center gap-3 rounded-md border border-border/70 bg-bg-surface/30 px-3 py-2">
+    <div className="flex items-center gap-3 rounded-lg border border-border/70 bg-bg-surface/40 px-3.5 py-2.5 transition hover:border-border edge-light">
       <HardDrive size={13} className="text-brand-emerald" />
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between font-mono text-[11px]">

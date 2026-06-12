@@ -99,7 +99,7 @@ function OverviewCard({ data, onClick }: { data: HostOverview; onClick: () => vo
     <div
       onClick={onClick}
       className={cn(
-        "group cursor-pointer overflow-hidden rounded-lg border border-border border-l-2 bg-bg-surface/50 p-4 transition hover:border-border-strong hover:bg-bg-surface/70",
+        "group cursor-pointer overflow-hidden rounded-xl border border-border border-l-2 bg-bg-surface/60 p-4 shadow-card transition duration-200 hover:-translate-y-0.5 hover:border-border-strong hover:bg-bg-surface/90 hover:shadow-elevated",
         borderColor
       )}
     >

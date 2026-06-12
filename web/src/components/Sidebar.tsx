@@ -52,25 +52,25 @@ export function Sidebar({
   }, [hosts, filter]);
 
   return (
-    <aside className="flex h-full w-[260px] flex-col border-r border-border bg-bg-surface/60">
+    <aside className="flex h-full w-[264px] flex-col border-r border-border/70 bg-bg-surface/40 backdrop-blur-sm">
       {/* Brand */}
       <div className="flex items-center gap-2 px-4 pt-5 pb-4">
         <div
-          className="flex h-7 w-7 items-center justify-center rounded-md text-white"
+          className="flex h-7 w-7 items-center justify-center rounded-md text-white shadow-glow"
           style={{
             background: "linear-gradient(135deg, #9d87f5 0%, #ef6eae 100%)",
           }}
         >
           <Server size={15} strokeWidth={2.5} />
         </div>
-        <span className="font-display text-[19px] tracking-wide text-text-primary">
+        <span className="text-[15px] font-semibold tracking-tight">
           SSHPanel
         </span>
       </div>
 
       {/* Filtro local de hosts — ⌘K sigue abriendo el palette global */}
       <div className="px-3 pb-3">
-        <div className="flex items-center gap-2 rounded-md border border-border bg-bg-base/50 px-2.5 py-1.5 transition focus-within:border-brand-violet/60 focus-within:ring-2 focus-within:ring-brand-violet/20">
+        <div className="flex items-center gap-2 rounded-lg border border-border bg-bg-base/60 px-2.5 py-1.5 transition edge-light focus-within:border-brand-violet/50 focus-within:ring-2 focus-within:ring-brand-violet/15">
           <Search size={14} className="text-text-dim" />
           <input
             value={filter}
@@ -153,12 +153,15 @@ export function Sidebar({
                   <div
                     onClick={() => onSelect(h.id)}
                     className={cn(
-                      "group flex w-full cursor-pointer items-start gap-2.5 rounded-md px-2 py-1.5 text-left transition",
+                      "group relative flex w-full cursor-pointer items-start gap-2.5 rounded-md px-2.5 py-2 text-left transition",
                       selectedId === h.id
-                        ? "bg-bg-hover"
-                        : "hover:bg-bg-hover/60"
+                        ? "bg-gradient-to-r from-brand-violet/12 to-transparent edge-light"
+                        : "hover:bg-bg-hover/50"
                     )}
                   >
+                    {selectedId === h.id && (
+                      <span className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-full bg-brand-violet" />
+                    )}
                     <HostAvatar name={h.name} size={26} connected={h.connected} />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-1.5">

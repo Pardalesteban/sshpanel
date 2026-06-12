@@ -33,7 +33,6 @@ export default {
       fontFamily: {
         sans: ["Geist", "ui-sans-serif", "system-ui", "sans-serif"],
         mono: ["Geist Mono", "ui-monospace", "monospace"],
-        display: ["Instrument Serif", "Georgia", "serif"],
       },
       borderRadius: {
         sm: "7px",

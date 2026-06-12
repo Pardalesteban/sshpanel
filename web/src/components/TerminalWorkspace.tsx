@@ -180,11 +180,11 @@ export function TerminalWorkspace({ hostId, hostName, active }: Props) {
                   }
                 }}
                 className={cn(
-                  "group flex shrink-0 cursor-pointer items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs transition",
+                  "group flex shrink-0 cursor-pointer items-center gap-1.5 rounded-md px-2.5 py-1 text-xs transition",
                   isOpen
-                    ? "border-brand-indigo/40 bg-brand-indigo/10 text-text-primary"
-                    : "border-transparent text-text-muted hover:bg-bg-hover hover:text-text-primary",
-                  isFocused && "ring-1 ring-brand-indigo/60"
+                    ? "bg-bg-elevated text-text-primary shadow-card edge-light"
+                    : "text-text-muted hover:bg-bg-hover/60 hover:text-text-primary",
+                  isFocused && "ring-1 ring-brand-indigo/50"
                 )}
                 title="Doble click para renombrar · click central para cerrar"
               >

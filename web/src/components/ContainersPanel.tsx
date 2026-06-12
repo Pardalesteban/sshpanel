@@ -216,7 +216,7 @@ function ContainerCard({
   return (
     <div
       className={cn(
-        "group relative overflow-hidden rounded-lg border border-border border-l-2 bg-bg-surface/50 p-4 transition hover:border-border-strong",
+        "group relative overflow-hidden rounded-xl border border-border border-l-2 bg-bg-surface/60 p-4 shadow-card transition duration-200 hover:border-border-strong hover:bg-bg-surface/80",
         stateColor.border
       )}
     >

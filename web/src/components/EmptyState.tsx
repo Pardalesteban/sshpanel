@@ -24,7 +24,7 @@ export function EmptyState({ onAdd }: Props) {
         </div>
       </div>
 
-      <h2 className="font-display text-3xl tracking-wide text-text-primary">
+      <h2 className="text-2xl font-semibold tracking-tight text-text-primary">
         Conectá tu primer servidor
       </h2>
       <p className="mt-3 max-w-sm text-sm leading-relaxed text-text-muted">
@@ -34,7 +34,7 @@ export function EmptyState({ onAdd }: Props) {
 
       <button
         onClick={onAdd}
-        className="mt-6 inline-flex items-center gap-2 rounded-md bg-brand-violet px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-brand-violet-hover hover:shadow-glow"
+        className="mt-7 inline-flex items-center gap-2 rounded-full bg-brand-violet px-5 py-2 text-sm font-medium text-white shadow-glow transition hover:bg-brand-violet-hover hover:shadow-elevated"
       >
         <Plus size={16} />
         Agregar host

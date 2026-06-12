@@ -90,7 +90,7 @@ export function HostDetail({
         <HostAvatar name={host.name} size={48} connected={host.connected} />
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <h1 className="truncate font-display text-2xl tracking-wide text-text-primary">
+            <h1 className="truncate text-xl font-semibold tracking-tight text-text-primary">
               {host.name}
             </h1>
             <StatusBadge connected={host.connected} />
@@ -102,12 +102,12 @@ export function HostDetail({
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           {host.connected ? (
             <button
               onClick={handleDisconnect}
               disabled={busy}
-              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-bg-elevated px-3 py-1.5 text-sm font-medium text-text-muted transition hover:border-brand-rose/40 hover:bg-brand-rose/10 hover:text-brand-rose disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-bg-elevated px-4 py-1.5 text-[13px] font-medium text-text-muted transition hover:border-brand-rose/40 hover:bg-brand-rose/10 hover:text-brand-rose disabled:opacity-50 edge-light"
             >
               <PlugZap size={14} />
               {busy ? "Desconectando…" : "Desconectar"}
@@ -116,33 +116,37 @@ export function HostDetail({
             <button
               onClick={handleConnect}
               disabled={busy}
-              className="inline-flex items-center gap-1.5 rounded-md bg-brand-violet px-3 py-1.5 text-sm font-medium text-white shadow-sm transition hover:bg-brand-violet-hover hover:shadow-glow disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 rounded-full bg-brand-violet px-4 py-1.5 text-[13px] font-medium text-white shadow-sm transition hover:bg-brand-violet-hover hover:shadow-glow disabled:opacity-50"
             >
               <Plug size={14} />
               {busy ? "Conectando…" : "Conectar"}
             </button>
           )}
-          <button
-            onClick={() => setKeysOpen(true)}
-            className="rounded-md p-2 text-text-dim transition hover:bg-bg-hover hover:text-brand-indigo"
-            title="Claves SSH"
-          >
-            <Key size={14} />
-          </button>
-          <button
-            onClick={onEdit}
-            className="rounded-md p-2 text-text-dim transition hover:bg-bg-hover hover:text-text-primary"
-            title="Editar host"
-          >
-            <Pencil size={14} />
-          </button>
-          <button
-            onClick={handleDelete}
-            className="rounded-md p-2 text-text-dim transition hover:bg-bg-hover hover:text-brand-rose"
-            title="Eliminar host"
-          >
-            <Trash2 size={14} />
-          </button>
+          <div className="flex items-center overflow-hidden rounded-full border border-border bg-bg-surface/60 edge-light">
+            <button
+              onClick={() => setKeysOpen(true)}
+              className="px-3 py-2 text-text-dim transition hover:bg-bg-hover hover:text-brand-indigo"
+              title="Claves SSH"
+            >
+              <Key size={14} />
+            </button>
+            <span className="h-4 w-px bg-border" />
+            <button
+              onClick={onEdit}
+              className="px-3 py-2 text-text-dim transition hover:bg-bg-hover hover:text-text-primary"
+              title="Editar host"
+            >
+              <Pencil size={14} />
+            </button>
+            <span className="h-4 w-px bg-border" />
+            <button
+              onClick={handleDelete}
+              className="px-3 py-2 text-text-dim transition hover:bg-brand-rose/10 hover:text-brand-rose"
+              title="Eliminar host"
+            >
+              <Trash2 size={14} />
+            </button>
+          </div>
         </div>
       </header>
 
@@ -152,46 +156,48 @@ export function HostDetail({
         </div>
       )}
 
-      {/* Tabs */}
-      <nav className="flex items-center gap-1 border-b border-border px-6">
-        <TabButton
-          active={tab === "overview"}
-          onClick={() => setTab("overview")}
-          icon={<Info size={13} />}
-          label="Resumen"
-        />
-        <TabButton
-          active={tab === "system"}
-          onClick={() => setTab("system")}
-          icon={<Activity size={13} />}
-          label="Sistema"
-          accent="violet"
-          disabled={!host.connected}
-        />
-        <TabButton
-          active={tab === "containers"}
-          onClick={() => setTab("containers")}
-          icon={<Box size={13} />}
-          label="Containers"
-          accent="cyan"
-          disabled={!host.connected}
-        />
-        <TabButton
-          active={tab === "compose"}
-          onClick={() => setTab("compose")}
-          icon={<Layers size={13} />}
-          label="Compose"
-          accent="violet"
-          disabled={!host.connected}
-        />
-        <TabButton
-          active={tab === "terminal"}
-          onClick={() => setTab("terminal")}
-          icon={<Terminal size={13} />}
-          label="Terminal"
-          accent="indigo"
-          disabled={!host.connected}
-        />
+      {/* Tabs — segmented control flotante */}
+      <nav className="flex items-center border-b border-border/60 px-8 py-2.5">
+        <div className="inline-flex items-center gap-0.5 rounded-lg border border-border bg-bg-surface/60 p-1 edge-light">
+          <TabButton
+            active={tab === "overview"}
+            onClick={() => setTab("overview")}
+            icon={<Info size={13} />}
+            label="Resumen"
+          />
+          <TabButton
+            active={tab === "system"}
+            onClick={() => setTab("system")}
+            icon={<Activity size={13} />}
+            label="Sistema"
+            accent="violet"
+            disabled={!host.connected}
+          />
+          <TabButton
+            active={tab === "containers"}
+            onClick={() => setTab("containers")}
+            icon={<Box size={13} />}
+            label="Containers"
+            accent="cyan"
+            disabled={!host.connected}
+          />
+          <TabButton
+            active={tab === "compose"}
+            onClick={() => setTab("compose")}
+            icon={<Layers size={13} />}
+            label="Compose"
+            accent="violet"
+            disabled={!host.connected}
+          />
+          <TabButton
+            active={tab === "terminal"}
+            onClick={() => setTab("terminal")}
+            icon={<Terminal size={13} />}
+            label="Terminal"
+            accent="indigo"
+            disabled={!host.connected}
+          />
+        </div>
       </nav>
 
       {/* Tab content
@@ -294,20 +300,16 @@ function TabButton({ active, onClick, icon, label, accent, disabled }: TabButton
     accent === "indigo" ? "text-brand-indigo" :
     accent === "violet" ? "text-brand-violet" :
     "text-text-primary";
-  const borderColor =
-    accent === "cyan" ? "border-brand-cyan" :
-    accent === "indigo" ? "border-brand-indigo" :
-    "border-brand-violet";
 
   return (
     <button
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        "relative flex items-center gap-1.5 border-b-2 px-3 py-2.5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-40",
+        "relative flex items-center gap-1.5 rounded-md px-3 py-1.5 text-[13px] font-medium transition disabled:cursor-not-allowed disabled:opacity-35",
         active
-          ? `${borderColor} ${accentColor}`
-          : "border-transparent text-text-muted hover:text-text-primary"
+          ? `bg-bg-elevated ${accentColor} shadow-card`
+          : "text-text-muted hover:bg-bg-hover/60 hover:text-text-primary"
       )}
     >
       {icon}
@@ -349,7 +351,7 @@ function OverviewPanel({ host, onTab }: { host: Host; onTab: (t: Tab) => void })
         />
       </div>
 
-      <div className="mt-6 rounded-lg border border-border bg-bg-surface/40 p-5">
+      <div className="mt-6 rounded-xl border border-border bg-bg-surface/50 p-5 shadow-card edge-light">
         <h3 className="mb-3 text-xs font-medium uppercase tracking-luxe text-text-dim">
           Detalles de conexión
         </h3>
@@ -410,10 +412,10 @@ function ActionCard({ icon, accent, title, description, cta, onClick, disabled }
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        "group relative overflow-hidden rounded-lg border border-border bg-bg-surface/50 p-5 text-left transition",
+        "group relative overflow-hidden rounded-xl border border-border bg-bg-surface/60 p-5 text-left shadow-card transition duration-200",
         disabled
           ? "opacity-50"
-          : "hover:border-border-strong hover:bg-bg-surface/80"
+          : "hover:-translate-y-0.5 hover:border-border-strong hover:bg-bg-surface/90 hover:shadow-elevated"
       )}
     >
       <div
