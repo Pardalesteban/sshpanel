@@ -336,7 +336,7 @@ export function CommandPalette({ open, onClose, ctx }: Props) {
         onClick={(e) => e.stopPropagation()}
         style={{
           boxShadow:
-            "0 24px 60px -20px rgba(0,0,0,0.7), 0 0 0 1px rgba(139, 92, 246, 0.15)",
+            "0 24px 60px -20px rgba(0,0,0,0.7), 0 0 0 1px rgba(157, 135, 245, 0.15)",
         }}
       >
         {/* Search */}
@@ -384,7 +384,7 @@ export function CommandPalette({ open, onClose, ctx }: Props) {
           ) : (
             grouped.map(([group, arr]) => (
               <div key={group} className="mb-1">
-                <div className="px-4 pb-1 pt-2 text-[10px] font-medium uppercase tracking-wider text-text-dim">
+                <div className="px-4 pb-1 pt-2 text-[10px] font-medium uppercase tracking-luxe text-text-dim">
                   {group}
                 </div>
                 {arr.map((item) => {

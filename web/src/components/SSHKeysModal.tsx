@@ -100,7 +100,7 @@ export function SSHKeysModal({ open, hostId, hostName, onClose, onChange }: Prop
           <div className="flex items-start gap-3">
             <div
               className="flex h-9 w-9 items-center justify-center rounded-md text-white"
-              style={{ background: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)" }}
+              style={{ background: "linear-gradient(135deg, #7c84f5 0%, #9d87f5 100%)" }}
             >
               <Key size={16} />
             </div>
@@ -168,7 +168,7 @@ export function SSHKeysModal({ open, hostId, hostName, onClose, onChange }: Prop
               se asocia automáticamente al host (próxima conexión usa key-auth).
             </p>
             <label className="block">
-              <span className="mb-1 block text-[11px] font-medium uppercase tracking-wider text-text-dim">
+              <span className="mb-1 block text-[11px] font-medium uppercase tracking-luxe text-text-dim">
                 Comentario
               </span>
               <input

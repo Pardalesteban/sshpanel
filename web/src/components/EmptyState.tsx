@@ -11,23 +11,23 @@ export function EmptyState({ onAdd }: Props) {
         <div
           className="absolute inset-0 blur-2xl opacity-30"
           style={{
-            background: "linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)",
+            background: "linear-gradient(135deg, #9d87f5 0%, #ef6eae 100%)",
           }}
         />
         <div
           className="relative flex h-16 w-16 items-center justify-center rounded-2xl text-white"
           style={{
-            background: "linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)",
+            background: "linear-gradient(135deg, #9d87f5 0%, #ef6eae 100%)",
           }}
         >
           <Server size={28} strokeWidth={2} />
         </div>
       </div>
 
-      <h2 className="text-xl font-semibold tracking-tight">
+      <h2 className="font-display text-3xl tracking-wide text-text-primary">
         Conectá tu primer servidor
       </h2>
-      <p className="mt-2 max-w-sm text-sm text-text-muted">
+      <p className="mt-3 max-w-sm text-sm leading-relaxed text-text-muted">
         Guardá tus conexiones SSH y administrá Docker, logs y terminales en un
         solo lugar.
       </p>

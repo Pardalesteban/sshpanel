@@ -17,12 +17,12 @@ type KillState =
 
 const MAX_SAMPLES = 60; // ~2 min de historia a 2s/snapshot
 const COLORS = {
-  cpu: "#8b5cf6",      // violet
-  mem: "#22d3ee",      // cyan
-  disk: "#10b981",     // emerald
-  net_rx: "#6366f1",   // indigo
-  net_tx: "#ec4899",   // pink
-  latency: "#f59e0b",  // amber
+  cpu: "#9d87f5",      // violet
+  mem: "#5cd3e6",      // cyan
+  disk: "#2dd49e",     // emerald
+  net_rx: "#7c84f5",   // indigo
+  net_tx: "#ef6eae",   // pink
+  latency: "#e3a857",  // amber
 };
 
 export function SystemPanel({ hostId }: Props) {
@@ -161,7 +161,7 @@ export function SystemPanel({ hostId }: Props) {
 
       {/* Disks */}
       <section className="px-6 pb-4">
-        <h3 className="mb-2 text-[10px] font-medium uppercase tracking-wider text-text-dim">
+        <h3 className="mb-2 text-[10px] font-medium uppercase tracking-luxe text-text-dim">
           Discos
         </h3>
         <div className="space-y-1.5">
@@ -177,7 +177,7 @@ export function SystemPanel({ hostId }: Props) {
       {/* Process list */}
       <section className="px-6 pb-6">
         <div className="mb-2 flex items-center justify-between">
-          <h3 className="text-[10px] font-medium uppercase tracking-wider text-text-dim">
+          <h3 className="text-[10px] font-medium uppercase tracking-luxe text-text-dim">
             Top procesos
           </h3>
           <div className="flex items-center gap-1.5 rounded-md border border-border bg-bg-base/60 px-2">
@@ -219,7 +219,7 @@ function StatCard({
         <div>
           <div className="flex items-center gap-1.5" style={{ color }}>
             {icon}
-            <span className="text-[10px] font-medium uppercase tracking-wider">{label}</span>
+            <span className="text-[10px] font-medium uppercase tracking-luxe">{label}</span>
           </div>
           <div className="mt-1 font-mono text-lg font-medium text-text-primary">
             {value}

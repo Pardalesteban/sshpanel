@@ -58,12 +58,12 @@ export function Sidebar({
         <div
           className="flex h-7 w-7 items-center justify-center rounded-md text-white"
           style={{
-            background: "linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)",
+            background: "linear-gradient(135deg, #9d87f5 0%, #ef6eae 100%)",
           }}
         >
           <Server size={15} strokeWidth={2.5} />
         </div>
-        <span className="text-[15px] font-semibold tracking-tight">
+        <span className="font-display text-[19px] tracking-wide text-text-primary">
           SSHPanel
         </span>
       </div>
@@ -121,7 +121,7 @@ export function Sidebar({
 
       {/* Section label */}
       <div className="flex items-center justify-between px-4 pt-2 pb-1.5">
-        <span className="text-[11px] font-medium uppercase tracking-wider text-text-dim">
+        <span className="text-[10px] font-medium uppercase tracking-luxe text-text-dim">
           Hosts
         </span>
         <button

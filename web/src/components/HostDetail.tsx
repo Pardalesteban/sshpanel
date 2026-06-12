@@ -90,7 +90,7 @@ export function HostDetail({
         <HostAvatar name={host.name} size={48} connected={host.connected} />
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <h1 className="truncate text-xl font-semibold tracking-tight">
+            <h1 className="truncate font-display text-2xl tracking-wide text-text-primary">
               {host.name}
             </h1>
             <StatusBadge connected={host.connected} />
@@ -350,7 +350,7 @@ function OverviewPanel({ host, onTab }: { host: Host; onTab: (t: Tab) => void })
       </div>
 
       <div className="mt-6 rounded-lg border border-border bg-bg-surface/40 p-5">
-        <h3 className="mb-3 text-xs font-medium uppercase tracking-wider text-text-dim">
+        <h3 className="mb-3 text-xs font-medium uppercase tracking-luxe text-text-dim">
           Detalles de conexión
         </h3>
         <dl className="grid grid-cols-2 gap-y-2 text-sm">

@@ -130,7 +130,7 @@ export function ContainersPanel({ hostId, hostName = "", onOpenLogs }: Props) {
     <div className="flex h-full flex-col overflow-hidden">
       <div className="flex items-center justify-between border-b border-border px-6 py-3">
         <div className="flex items-center gap-2">
-          <span className="text-xs font-medium uppercase tracking-wider text-text-dim">
+          <span className="text-xs font-medium uppercase tracking-luxe text-text-dim">
             {containers.length} {containers.length === 1 ? "container" : "containers"}
           </span>
         </div>
@@ -250,7 +250,7 @@ function ContainerCard({
         <div className="mt-3 grid grid-cols-2 gap-2">
           <StatMini
             icon={<Cpu size={11} />}
-            color="#8b5cf6"
+            color="#9d87f5"
             label="CPU"
             value={`${stats.last.cpu_percent.toFixed(1)}%`}
             series={stats.cpu}
@@ -258,7 +258,7 @@ function ContainerCard({
           />
           <StatMini
             icon={<MemoryStick size={11} />}
-            color="#22d3ee"
+            color="#5cd3e6"
             label="MEM"
             value={`${stats.last.mem_percent.toFixed(1)}%`}
             sub={formatStatsBytes(stats.last.mem_used_bytes)}
@@ -333,7 +333,7 @@ function StatMini({
   return (
     <div className="flex items-center justify-between rounded-md border border-border/60 bg-bg-base/40 px-2 py-1.5">
       <div className="min-w-0">
-        <div className="flex items-center gap-1 text-[9px] font-medium uppercase tracking-wider" style={{ color }}>
+        <div className="flex items-center gap-1 text-[9px] font-medium uppercase tracking-luxe" style={{ color }}>
           {icon}
           {label}
         </div>
@@ -376,11 +376,11 @@ function DockerMissingCard({ onInstall }: { onInstall: () => void }) {
       <div className="relative mb-5">
         <div
           className="absolute inset-0 blur-2xl opacity-30"
-          style={{ background: "linear-gradient(135deg, #22d3ee 0%, #8b5cf6 100%)" }}
+          style={{ background: "linear-gradient(135deg, #5cd3e6 0%, #9d87f5 100%)" }}
         />
         <div
           className="relative flex h-16 w-16 items-center justify-center rounded-2xl text-white"
-          style={{ background: "linear-gradient(135deg, #22d3ee 0%, #8b5cf6 100%)" }}
+          style={{ background: "linear-gradient(135deg, #5cd3e6 0%, #9d87f5 100%)" }}
         >
           <Box size={28} />
         </div>

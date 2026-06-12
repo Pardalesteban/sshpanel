@@ -149,7 +149,7 @@ export function ConfigDialog() {
           <form onSubmit={submit} className="space-y-3.5">
             {!isExport && (
               <label className="block">
-                <span className="mb-1 block text-[11px] font-medium uppercase tracking-wider text-text-dim">
+                <span className="mb-1 block text-[11px] font-medium uppercase tracking-luxe text-text-dim">
                   Archivo
                 </span>
                 <input
@@ -163,7 +163,7 @@ export function ConfigDialog() {
               </label>
             )}
             <label className="block">
-              <span className="mb-1 flex items-center gap-1 text-[11px] font-medium uppercase tracking-wider text-text-dim">
+              <span className="mb-1 flex items-center gap-1 text-[11px] font-medium uppercase tracking-luxe text-text-dim">
                 <Lock size={10} />
                 Contraseña
               </span>

@@ -138,14 +138,14 @@ function OverviewCard({ data, onClick }: { data: HostOverview; onClick: () => vo
           <div className="mt-3 grid grid-cols-2 gap-2">
             <MetricBar
               icon={<Cpu size={11} />}
-              color="#8b5cf6"
+              color="#9d87f5"
               label="CPU"
               value={data.cpu_percent}
               display={`${data.cpu_percent.toFixed(1)}%`}
             />
             <MetricBar
               icon={<MemoryStick size={11} />}
-              color="#22d3ee"
+              color="#5cd3e6"
               label="MEM"
               value={data.mem_percent}
               display={`${data.mem_percent.toFixed(0)}%`}
@@ -195,7 +195,7 @@ function MetricBar({
   return (
     <div className="rounded-md border border-border/60 bg-bg-base/40 px-2 py-1.5">
       <div className="flex items-center justify-between">
-        <span className="flex items-center gap-1 text-[9px] font-medium uppercase tracking-wider" style={{ color }}>
+        <span className="flex items-center gap-1 text-[9px] font-medium uppercase tracking-luxe" style={{ color }}>
           {icon}
           {label}
         </span>

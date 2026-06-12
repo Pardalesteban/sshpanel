@@ -28,14 +28,14 @@ export function modShortcut(key: string): string {
  * Estilo "identicon" pero con dos colores que combinan.
  */
 const GRADIENT_PAIRS: [string, string][] = [
-  ["#8b5cf6", "#ec4899"],
-  ["#22d3ee", "#6366f1"],
-  ["#10b981", "#22d3ee"],
-  ["#f59e0b", "#f43f5e"],
-  ["#ec4899", "#6366f1"],
-  ["#6366f1", "#8b5cf6"],
-  ["#10b981", "#6366f1"],
-  ["#22d3ee", "#8b5cf6"],
+  ["#9d87f5", "#ef6eae"],
+  ["#5cd3e6", "#7c84f5"],
+  ["#2dd49e", "#5cd3e6"],
+  ["#e3a857", "#ef5d77"],
+  ["#ef6eae", "#7c84f5"],
+  ["#7c84f5", "#9d87f5"],
+  ["#2dd49e", "#7c84f5"],
+  ["#5cd3e6", "#9d87f5"],
 ];
 
 export function hashGradient(seed: string): string {

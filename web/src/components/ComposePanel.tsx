@@ -55,7 +55,7 @@ export function ComposePanel({ hostId }: Props) {
   return (
     <div className="flex h-full flex-col overflow-hidden">
       <div className="flex items-center justify-between border-b border-border px-6 py-3">
-        <span className="text-xs font-medium uppercase tracking-wider text-text-dim">
+        <span className="text-xs font-medium uppercase tracking-luxe text-text-dim">
           {projects.length} {projects.length === 1 ? "stack" : "stacks"}
         </span>
         <button
@@ -226,7 +226,7 @@ function ServicesList({ hostId, project }: { hostId: string; project: ComposePro
       ) : (
         <>
           <div className="mb-2 flex items-center justify-between">
-            <span className="text-[10px] font-medium uppercase tracking-wider text-text-dim">
+            <span className="text-[10px] font-medium uppercase tracking-luxe text-text-dim">
               Servicios
             </span>
             <button
@@ -307,7 +307,7 @@ function ActionStreamDrawer({
   useEffect(() => {
     if (!containerRef.current) return;
     const term = new XTerm({
-      theme: { background: "#0c0d10", foreground: "#f5f5f7" },
+      theme: { background: "#09090c", foreground: "#f2f1f4" },
       fontFamily: '"Geist Mono", ui-monospace, monospace',
       fontSize: 12,
       lineHeight: 1.4,

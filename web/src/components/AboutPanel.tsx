@@ -80,7 +80,7 @@ export function AboutPanel({ open, onClose }: Props) {
         )}
 
         <div className="flex-1 overflow-y-auto px-5 py-4">
-          <h3 className="mb-3 flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wider text-text-dim">
+          <h3 className="mb-3 flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-luxe text-text-dim">
             <Info size={11} />
             Últimos cambios
           </h3>

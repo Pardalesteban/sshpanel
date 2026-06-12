@@ -286,7 +286,7 @@ interface FieldProps {
 function Field({ label, value, onChange, type = "text", placeholder, mono, required, autoFocus }: FieldProps) {
   return (
     <label className="block">
-      <span className="mb-1 block text-[11px] font-medium uppercase tracking-wider text-text-dim">
+      <span className="mb-1 block text-[11px] font-medium uppercase tracking-luxe text-text-dim">
         {label}
       </span>
       <input
