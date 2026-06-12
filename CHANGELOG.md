@@ -10,6 +10,28 @@ This file is the source of truth consumed by the in-app update viewer (Fase 6).
 
 _Nothing yet — open a discussion or issue if you have ideas._
 
+## [0.4.0] — 2026-06-12
+
+### Changed
+
+- **Rediseño visual completo de la aplicación** (sin cambios de
+  funcionalidad):
+  - Paleta refinada: negros más profundos, bordes más finos y acentos
+    suavizados — violeta lavanda, dorado champagne, cyan/esmeralda/rosa
+    sobrios. Alcanza a toda la UI, los themes ANSI de las terminales, los
+    sparklines del tab Sistema y los identicons de hosts.
+  - Tabs del host rediseñadas: de subrayado a **segmented control flotante**
+    con pills (la activa con fondo elevado y sombra).
+  - Header del host: botón Conectar/Desconectar como pill redondeada con
+    glow, y acciones secundarias agrupadas en un cluster con separadores.
+  - Sidebar: host activo con barra de acento violeta y gradiente lateral,
+    buscador con relieve, logo con glow.
+  - Cards con relieve en toda la app (`rounded-xl`, sombra con filo superior
+    iluminado, hover con elevación). Stat cards del Sistema con el valor en
+    grande y un halo difuminado del color de cada métrica.
+  - Fondo con halos sutiles y viñeta, scrollbar más fino, glass más profundo
+    en modales y command palette, animaciones con easing más suave.
+
 ## [0.3.0] — 2026-06-12
 
 ### Added
