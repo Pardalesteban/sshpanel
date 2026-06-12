@@ -10,6 +10,13 @@ This file is the source of truth consumed by the in-app update viewer (Fase 6).
 
 ### Fixed
 
+- **La app ahora es single-instance** — abrir el .exe con la app ya
+  corriendo en el tray mostraba/duplicaba procesos: cada doble-click
+  spawneaba otra instancia completa (otra ventana, otro tray icon, otro
+  sidecar Python). Ahora la segunda instancia detecta a la primera, le
+  pasa el foco (muestra y enfoca la ventana existente) y muere al
+  instante. Un solo icono en el tray, siempre.
+
 - **El instalador ya no tira error de "archivo en uso" durante el
   auto-update en Windows** — el sidecar Python (`sshpanel-backend.exe`)
   seguía corriendo cuando NSIS intentaba sobreescribirlo. Ahora el update
