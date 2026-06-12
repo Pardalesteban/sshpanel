@@ -112,7 +112,12 @@ async function checkOnce(opts: { silent?: boolean } = {}): Promise<void> {
   }
 }
 
-/** Descarga + verifica la firma. No reinicia — eso lo hace `restart()`. */
+/** Descarga + verifica la firma + instala. No reinicia — eso lo hace `restart()`.
+ *
+ * Download e install van separados a propósito: antes de instalar hay que
+ * matar el sidecar Python (`kill_backend`), porque en Windows el instalador
+ * NSIS no puede sobreescribir `sshpanel-backend.exe` si sigue corriendo y
+ * tira un error de "archivo en uso". */
 async function downloadAndInstall(): Promise<void> {
   if (!updateHandle) {
     await checkOnce();
@@ -122,7 +127,7 @@ async function downloadAndInstall(): Promise<void> {
   try {
     let downloaded = 0;
     let total = 0;
-    await updateHandle.downloadAndInstall((event: any) => {
+    await updateHandle.download((event: any) => {
       switch (event.event) {
         case "Started":
           total = event.data.contentLength ?? 0;
@@ -133,11 +138,23 @@ async function downloadAndInstall(): Promise<void> {
           setState({ progress: { downloaded, total } });
           break;
         case "Finished":
-          setState({ stage: "ready", progress: { downloaded: total, total } });
+          setState({ progress: { downloaded: total, total } });
           break;
       }
     });
-    // Si el evento Finished no llegó por alguna razón, igual la marcamos lista.
+
+    // El update ya está descargado y verificado — soltamos el sidecar para
+    // que el instalador no encuentre archivos lockeados.
+    try {
+      const { invoke } = await import("@tauri-apps/api/core");
+      await invoke("kill_backend");
+    } catch (e) {
+      console.warn("[updater] no se pudo bajar el backend antes del install:", e);
+    }
+
+    // En Windows esto lanza el instalador y cierra la app; en macOS/Linux
+    // reemplaza el binario y queda esperando el relaunch().
+    await updateHandle.install();
     if (state.stage !== "ready") setState({ stage: "ready" });
   } catch (e: any) {
     setState({ stage: "error", error: e?.message ?? String(e) });

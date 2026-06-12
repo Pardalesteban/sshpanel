@@ -10,6 +10,38 @@ use tauri_plugin_shell::ShellExt;
 
 struct BackendProcess(Mutex<Option<CommandChild>>);
 
+/// Mata el sidecar y todo su árbol de procesos.
+///
+/// En Windows el sidecar es un onefile de PyInstaller: el bootloader spawnea
+/// un proceso hijo que también mantiene abierto el .exe. Un kill() simple
+/// solo mata al padre y el hijo deja el binario lockeado — eso hacía fallar
+/// al instalador NSIS durante el auto-update. taskkill /T baja el árbol entero.
+fn kill_backend_tree(child: CommandChild) {
+    #[cfg(windows)]
+    {
+        use std::os::windows::process::CommandExt;
+        const CREATE_NO_WINDOW: u32 = 0x0800_0000;
+        let pid = child.pid();
+        let _ = std::process::Command::new("taskkill")
+            .args(["/F", "/T", "/PID", &pid.to_string()])
+            .creation_flags(CREATE_NO_WINDOW)
+            .status();
+    }
+    #[cfg(not(windows))]
+    {
+        let _ = child.kill();
+    }
+}
+
+/// Invocado desde el frontend justo antes de instalar un update, para que
+/// el instalador no encuentre el binario del sidecar en uso.
+#[tauri::command]
+fn kill_backend(state: tauri::State<'_, BackendProcess>) {
+    if let Some(child) = state.0.lock().unwrap().take() {
+        kill_backend_tree(child);
+    }
+}
+
 #[allow(dead_code)]
 fn spawn_backend(app: &tauri::AppHandle) -> Result<CommandChild, Box<dyn std::error::Error>> {
     let sidecar = app.shell().sidecar("sshpanel-backend")?;
@@ -35,6 +67,7 @@ pub fn run() {
         ))
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_process::init())
+        .invoke_handler(tauri::generate_handler![kill_backend])
         .manage(BackendProcess(Mutex::new(None)))
         .setup(|app| {
             // Spawn del backend Python (solo en release; en dev usás `sshpanel app`)
@@ -148,7 +181,7 @@ pub fn run() {
                 let state: tauri::State<BackendProcess> = app_handle.state();
                 let mut guard = state.0.lock().unwrap();
                 if let Some(child) = guard.take() {
-                    let _ = child.kill();
+                    kill_backend_tree(child);
                 }
             }
         });

@@ -8,7 +8,14 @@ This file is the source of truth consumed by the in-app update viewer (Fase 6).
 
 ## [Unreleased]
 
-_Nothing yet — open a discussion or issue if you have ideas._
+### Fixed
+
+- **El instalador ya no tira error de "archivo en uso" durante el
+  auto-update en Windows** — el sidecar Python (`sshpanel-backend.exe`)
+  seguía corriendo cuando NSIS intentaba sobreescribirlo. Ahora el update
+  se descarga y verifica primero, después se mata el árbol completo del
+  sidecar (`taskkill /T` — PyInstaller onefile spawnea un proceso hijo) y
+  recién entonces se lanza el instalador.
 
 ## [0.4.0] — 2026-06-12
 
