@@ -65,9 +65,13 @@ def main():
             "--hidden-import", "uvicorn.protocols.websockets.websockets_impl",
             "--hidden-import", "uvicorn.lifespan.on",
             "--collect-submodules", "asyncssh",
-            # Agente IA: el MCP server (paquete `mcp`) y httpx se cargan de forma
-            # dinámica — sin esto el subcomando `mcp` muere con ModuleNotFoundError.
-            "--collect-submodules", "mcp",
+            # Agente IA: el MCP server y httpx se cargan de forma dinámica — sin
+            # esto el subcomando `mcp` muere con ModuleNotFoundError.
+            # OJO: colectamos `mcp.server` (lo que usa FastMCP), NO `mcp` entero —
+            # `mcp.cli` importa `typer` (dep opcional de `mcp[cli]`, no instalada)
+            # y rompe collect_submodules en CI.
+            "--collect-submodules", "mcp.server",
+            "--collect-submodules", "mcp.shared",
             "--collect-submodules", "httpx",
             "--hidden-import", "backend.agent.mcp_server",
             "--hidden-import", "backend.agent.classify_command",
