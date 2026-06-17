@@ -65,6 +65,12 @@ def main():
             "--hidden-import", "uvicorn.protocols.websockets.websockets_impl",
             "--hidden-import", "uvicorn.lifespan.on",
             "--collect-submodules", "asyncssh",
+            # Agente IA: el MCP server (paquete `mcp`) y httpx se cargan de forma
+            # dinámica — sin esto el subcomando `mcp` muere con ModuleNotFoundError.
+            "--collect-submodules", "mcp",
+            "--collect-submodules", "httpx",
+            "--hidden-import", "backend.agent.mcp_server",
+            "--hidden-import", "backend.agent.classify_command",
             str(ROOT / "sidecar" / "entrypoint.py"),
         ],
         cwd=str(ROOT),

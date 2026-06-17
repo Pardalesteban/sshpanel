@@ -10,6 +10,27 @@ This file is the source of truth consumed by the in-app update viewer (Fase 6).
 
 _Nothing yet — open a discussion or issue if you have ideas._
 
+## [0.5.0] — 2026-06-17
+
+### Added
+
+- **Agente IA integrado (Claude Code).** Nueva tab **Claude** por host: un
+  Claude Code **real**, con tu propia suscripción (login OAuth, no la API de
+  Anthropic), corriendo en una terminal interactiva dentro de la app. Opera
+  sobre el host por SSH y se ve/usa como Claude Code en la consola.
+- **Botón "Descargar Claude Code".** Si ya lo tenés instalado en el sistema, se
+  detecta y reutiliza (no reinstala); si no, lo baja on-demand a un directorio
+  gestionado con el instalador oficial, mostrando el progreso en vivo.
+- **El agente no puede tocar el código de SSHPanel** — por construcción: corre
+  en un directorio aislado fuera del repo y con las herramientas de escritura y
+  shell local denegadas. Su única vía de acción es un servidor MCP scopeado al
+  host, que reutiliza el pool de conexiones SSH existente.
+- **Confirmación de lo importante.** Un hook clasifica cada comando remoto:
+  las lecturas corren sin fricción y lo destructivo (rm, dd, systemctl, docker
+  rm, etc.) pide confirmación explícita antes de ejecutarse.
+- La sesión del agente **persiste al cambiar de tab/host** (mismo patrón que las
+  terminales SSH y el panel de Sistema).
+
 ## [0.4.1] — 2026-06-12
 
 ### Fixed

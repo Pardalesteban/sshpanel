@@ -102,6 +102,9 @@ export const api = {
     }),
   health: () => request<{ status: string; version: string }>("/health"),
 
+  // --- Agente IA (Claude Code) ---
+  agentStatus: () => request<AgentStatus>("/agent/status"),
+
   // --- Docker ---
   listContainers: (hostId: string, all = false) =>
     request<DockerContainer[]>(
@@ -169,6 +172,14 @@ export const api = {
       }
     ),
 };
+
+export interface AgentStatus {
+  installed: boolean;
+  source: "system" | "managed" | null;
+  version: string | null;
+  logged_in: boolean | null;
+  path: string | null;
+}
 
 export interface DockerContainer {
   ID: string;

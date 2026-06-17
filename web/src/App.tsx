@@ -12,7 +12,7 @@ import { ConfigDialog } from "./components/ConfigDialog";
 import { ExecResultModal } from "./components/ExecResultModal";
 import { api, type Host, type ExecResult } from "./lib/api";
 
-export type Tab = "overview" | "containers" | "compose" | "terminal" | "system";
+export type Tab = "overview" | "containers" | "compose" | "terminal" | "system" | "agent";
 
 const TABS_KEY = "sshpanel:tabs";
 
@@ -35,6 +35,7 @@ export default function App() {
   const [tabs, setTabs] = useState<Record<string, Tab>>(loadTabs);
   const [openedTerminals, setOpenedTerminals] = useState<string[]>([]);
   const [openedSystems, setOpenedSystems] = useState<string[]>([]);
+  const [openedAgents, setOpenedAgents] = useState<string[]>([]);
   const [openedLogs, setOpenedLogs] = useState<
     Array<{ hostId: string; containerId: string; containerName: string }>
   >([]);
@@ -82,6 +83,11 @@ export default function App() {
         prev.includes(selectedId) ? prev : [...prev, selectedId]
       );
     }
+    if (next === "agent") {
+      setOpenedAgents((prev) =>
+        prev.includes(selectedId) ? prev : [...prev, selectedId]
+      );
+    }
     setTabs((prev) => {
       const updated = { ...prev, [selectedId]: next };
       localStorage.setItem(TABS_KEY, JSON.stringify(updated));
@@ -111,6 +117,7 @@ export default function App() {
       // limpia terminales, system panels y logs abiertos de hosts eliminados
       setOpenedTerminals((prev) => prev.filter((id) => ids.has(id)));
       setOpenedSystems((prev) => prev.filter((id) => ids.has(id)));
+      setOpenedAgents((prev) => prev.filter((id) => ids.has(id)));
       setOpenedLogs((prev) => prev.filter((l) => ids.has(l.hostId)));
     } catch (e) {
       console.error(e);
@@ -210,6 +217,7 @@ export default function App() {
             onTabChange={setTab}
             openedTerminals={openedTerminals}
             openedSystems={openedSystems}
+            openedAgents={openedAgents}
             openedLogs={openedLogs}
             onOpenLogs={openLogs}
             onCloseLogs={closeLogs}

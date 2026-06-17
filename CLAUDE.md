@@ -28,6 +28,14 @@ backend/        FastAPI — core SSH logic, Docker API, REST + WebSocket endpoin
   db/
     database.py SQLite via SQLAlchemy (file in /app/data or ~/.sshpanel)
     models.py   Host model
+  agent/        Agente IA — Claude Code real en PTY local, scopeado a un host
+    runtime.py  Detección/instalación de claude (no reinstala si ya existe)
+    pty_bridge.py  PTY cross-platform (pywinpty en Win, pty stdlib en Unix)
+    guardrails.py  settings.json gestionado (deny local + scratch dir = no toca el repo)
+    mcp_server.py  Servidor MCP scopeado al host (único canal de acción de Claude)
+    classify_command.py  Hook PreToolUse: fuerza confirmación en comandos destructivos
+  api/
+    agent.py    /agent/status, WS /agent/install, WS /hosts/{id}/agent/ (PTY)
 
 cli/main.py     Click + Rich CLI — talks to the backend API
 web/            React + Vite + Tailwind frontend
@@ -94,7 +102,7 @@ Rules:
 - When starting a new task, add it to the appropriate phase if it isn't already there.
 - Never leave `roadmap.md` out of sync with the actual state of the project.
 
-Current focus: **Fase 4 con la pieza grande lista** — tab Sistema funcionando (sparklines CPU/RAM/network, discos con bar de progreso por threshold, process list filtrable, latencia con pill + dot en sidebar). El SystemPanel persiste samples al cambiar de tab/host (mismo patrón que terminales). Next: docker stats por container, multi-host view, kill process.
+Current focus: **Fase 8 — Agente IA (Claude Code integrado)**. Tab "Claude" por host: un Claude Code real (suscripción del user, no API) corriendo en un PTY local, scopeado al host vía un MCP server que pega al REST propio. No puede tocar el código de la app (cwd en scratch dir + deny de Write/Edit/Bash locales); confirma lo destructivo con un hook PreToolUse. Botón "Descargar Claude Code" que no reinstala si ya existe en el sistema. Next: multi-host, más tools de lectura en el MCP, subcomando CLI `sshpanel agent`.
 
 ## Design system
 

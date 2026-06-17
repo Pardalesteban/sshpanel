@@ -15,6 +15,7 @@ from .api.system import router as system_router
 from .api.overview import router as overview_router
 from .api.keys import router as keys_router
 from .api.compose import router as compose_router
+from .api.agent import router as agent_router
 
 try:
     VERSION = pkg_version("sshpanel")
@@ -64,6 +65,7 @@ app.include_router(system_router, prefix="/api")
 app.include_router(overview_router, prefix="/api")
 app.include_router(keys_router, prefix="/api")
 app.include_router(compose_router, prefix="/api")
+app.include_router(agent_router, prefix="/api")
 
 
 @app.get("/api/health")

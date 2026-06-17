@@ -17,6 +17,9 @@ dependencies = [
     "click>=8.1.0",
     "rich>=13.7.0",
     "python-multipart>=0.0.9",
+    # Agente IA (Claude Code integrado)
+    "mcp>=1.2.0",
+    "pywinpty>=2.0.0; sys_platform == 'win32'",
 ]
 
 [project.scripts]

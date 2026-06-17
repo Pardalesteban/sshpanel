@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plug, PlugZap, Terminal, Box, Trash2, Info, Pencil, Activity, Key, Layers } from "lucide-react";
+import { Plug, PlugZap, Terminal, Box, Trash2, Info, Pencil, Activity, Key, Layers, Sparkles } from "lucide-react";
 import type { Host } from "../lib/api";
 import { api } from "../lib/api";
 import { HostAvatar } from "./HostAvatar";
@@ -8,10 +8,11 @@ import { ContainersPanel } from "./ContainersPanel";
 import { ContainerLogs } from "./ContainerLogs";
 import { SystemPanel } from "./SystemPanel";
 import { ComposePanel } from "./ComposePanel";
+import { AgentPanel } from "./AgentPanel";
 import { SSHKeysModal } from "./SSHKeysModal";
 import { cn } from "../lib/utils";
 
-type Tab = "overview" | "containers" | "compose" | "terminal" | "system";
+type Tab = "overview" | "containers" | "compose" | "terminal" | "system" | "agent";
 
 interface OpenLog {
   hostId: string;
@@ -26,6 +27,7 @@ interface Props {
   onTabChange: (t: Tab) => void;
   openedTerminals: string[];
   openedSystems: string[];
+  openedAgents: string[];
   openedLogs: OpenLog[];
   onOpenLogs: (hostId: string, containerId: string, containerName: string) => void;
   onCloseLogs: (hostId: string) => void;
@@ -40,6 +42,7 @@ export function HostDetail({
   onTabChange: setTab,
   openedTerminals,
   openedSystems,
+  openedAgents,
   openedLogs,
   onOpenLogs,
   onCloseLogs,
@@ -197,6 +200,14 @@ export function HostDetail({
             accent="indigo"
             disabled={!host.connected}
           />
+          <TabButton
+            active={tab === "agent"}
+            onClick={() => setTab("agent")}
+            icon={<Sparkles size={13} />}
+            label="Claude"
+            accent="violet"
+            disabled={!host.connected}
+          />
         </div>
       </nav>
 
@@ -248,6 +259,25 @@ export function HostDetail({
               }}
             >
               <TerminalWorkspace hostId={tid} hostName={tHost.name} active={active} />
+            </div>
+          );
+        })}
+
+        {/* AgentPanels persistentes (la sesión de Claude sobrevive al cambio de tab) */}
+        {openedAgents.map((aid) => {
+          const active = tab === "agent" && aid === host.id;
+          const aHost = hosts.find((h) => h.id === aid);
+          if (!aHost) return null;
+          return (
+            <div
+              key={aid}
+              className="absolute inset-0"
+              style={{
+                visibility: active ? "visible" : "hidden",
+                pointerEvents: active ? "auto" : "none",
+              }}
+            >
+              <AgentPanel hostId={aid} hostName={aHost.name} active={active} />
             </div>
           );
         })}

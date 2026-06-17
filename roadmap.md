@@ -120,3 +120,26 @@
 - [ ] Verificación de host keys SSH (hoy `known_hosts=None` — TOFU: guardar fingerprint en la primera conexión y validar después)
 - [ ] Autenticación opcional de la API (token/password) para despliegues en VPS expuestos
 - [ ] Tests reales del backend (pytest + TestClient: CRUD hosts, export/import round-trip, parsers de docker stats)
+
+## Fase 8 — Agente IA (Claude Code integrado)
+Un Claude Code **real** (suscripción del usuario vía OAuth, no la API) embebido como
+una tab "Claude" por host. Corre en un PTY local y se ve/usa como la terminal de
+Claude Code en el CMD. **No puede modificar el código de SSHPanel** (por construcción);
+solo actúa sobre el host SSH, con confirmación de lo destructivo.
+- [x] **Detección sin reinstalar** — `runtime.resolve_claude_bin()` busca claude en el
+  PATH global → instalaciones conocidas (nativo/npm) → dir gestionado. Si ya está, no lo baja.
+- [x] **Botón "Descargar Claude Code"** — instalador oficial on-demand a `~/.sshpanel/agent/bin`,
+  con stream del progreso (WS `/api/agent/install`). `GET /api/agent/status` expone `source: system|managed`.
+- [x] **Login = suscripción** — el OAuth ocurre dentro del PTY (`/login`); credenciales en `~/.claude`.
+- [x] **Terminal del agente** — WS `/api/hosts/{id}/agent/` + PTY local cross-platform
+  (`pty_bridge.py`: pywinpty en Windows, `pty` stdlib en Unix), xterm.js en `AgentPanel.tsx`.
+  Persiste montada al cambiar de tab (patrón de terminales/systems).
+- [x] **MCP server scopeado al host** (`mcp_server.py`) — único canal de acción de Claude;
+  tools `run_command`/`docker_ps`/`docker_action`/`system_snapshot` que pegan al REST local
+  (reusa el SSHPool). Corre como subcomando del sidecar (`sshpanel-backend mcp --host-id`).
+- [x] **Guardrails** (`guardrails.py`) — settings.json gestionado con `cwd` en scratch dir
+  fuera del repo + `deny` de Write/Edit/Bash locales. Hook PreToolUse (`classify_command.py`)
+  que fuerza confirmación en comandos destructivos (rm/dd/systemctl/docker rm/…).
+- [ ] Multi-host (que el agente pueda saltar entre hosts con un host-picker tool)
+- [ ] `docker_logs` y más tools de lectura estructurada en el MCP
+- [ ] Subcomando CLI `sshpanel agent <host_id>` para lanzar el agente desde la terminal
